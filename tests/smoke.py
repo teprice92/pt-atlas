@@ -18,13 +18,13 @@ try:
   def action(name): page.get_by_role('button',name=name,exact=True).click()
   action('＋ Add intervention');page.get_by_label('Intervention name').fill('Test entry');page.get_by_label('Condition',exact=True).fill('Hip Osteoarthritis');page.get_by_label('Personal clinical notes').fill('Persisted note');action('Save intervention')
   page.get_by_role('heading',name='Test entry',exact=True).wait_for()
-  action('Edit intervention');page.get_by_label('Intervention name').fill('Updated entry');action('Save intervention');action('♡ Favorite')
+  action('Edit intervention');page.get_by_label('Intervention name').fill('Updated entry');action('Save intervention');action('♡ Favorite');page.get_by_role('button',name='♥ Favorited',exact=True).wait_for()
   page.reload();page.locator('[data-nav="favorites"]').first.click();page.get_by_role('heading',name='Updated entry').wait_for()
   page.locator('[data-nav="library"]').first.click();page.locator('[data-condition="Hip Osteoarthritis"]').click();action('Edit condition');page.get_by_label('Condition name').fill('Renamed condition');page.get_by_label('Personal notes',exact=True).fill('Condition note');action('Save condition');page.get_by_text('Condition note',exact=True).wait_for();page.get_by_role('heading',name='Updated entry').wait_for()
   page.locator('[data-nav="settings"]').first.click()
   with page.expect_download() as downloaded: action('↓ Export JSON backup')
   backup=json.loads(Path(downloaded.value.path()).read_text());assert len(backup['interventions'])==1;assert backup['interventions'][0]['condition']=='Renamed condition'
-  page.locator('[data-nav="library"]').first.click();page.locator('[data-open]').first.click();action('Delete');assert page.locator('[data-open]').count()==0
+  page.locator('[data-nav="library"]').first.click();page.locator('[data-open]').first.click();action('Delete');page.get_by_role('heading',name='Your library',exact=True).wait_for();assert page.locator('[data-open]').count()==0
   page.locator('[data-nav="import"]').first.click();page.locator('#restoreFile').set_input_files({'name':'backup.json','mimeType':'application/json','buffer':json.dumps(backup).encode()});page.get_by_text('Backup imported successfully').wait_for()
   malformed=json.loads(json.dumps(backup));malformed['interventions'][0]['name']='Must not persist';malformed['conditions'].append({'id':'bad'})
   page.locator('#restoreFile').set_input_files({'name':'invalid.json','mimeType':'application/json','buffer':json.dumps(malformed).encode()})

@@ -1,0 +1,1 @@
+{"name":"pt-atlas","version":"0.2.0","private":true,"scripts":{"build":"node --check app.js && node --check sw.js","test":"python tests/smoke.py"}}

@@ -1,6 +1,10 @@
-# PT Atlas delivery — version 0.6
+# PT Atlas delivery — version 0.7
 
-## Version 0.6 summary
+## Version 0.7 summary
+
+Fixed the logo/name not linking Home. Added custom body regions, safe Markdown formatting in notes, and image/PDF attachments sniffed by content. IndexedDB schema v3 and backup format v3 add regions and media, and older databases and backups still load. Verified locally: `npm run build`, 28 unit tests, and all five Playwright suites passed.
+
+## Version 0.6 notes
 
 Milestone 3 knowledge management: many-to-many condition links with condition-specific details, structured protocol phases, revision history with restore and recovery of deleted entries, printable collections, review-due indicators, and ranked search. IndexedDB schema v2 upgrades v1 in place. Backups are now version 2, and version 1 backups still import. Verified locally: `npm run build`, 24 unit tests, and all four Playwright suites passed.
 

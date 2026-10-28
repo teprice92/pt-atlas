@@ -4,6 +4,14 @@ An offline-first, installable personal library of physical therapy interventions
 
 Target URL once Pages is enabled: https://teprice92.github.io/pt-atlas/
 
+## Version 0.7: navigation fix, custom regions, formatted notes and attachments
+
+- **Home link.** The PT Atlas logo and name, in the desktop sidebar and the mobile top bar, now link to Home.
+- **Custom body regions.** Settings → Body regions adds your own specialties, such as Pelvic Health or Pediatrics. They appear everywhere the standard ten do: library tiles, editors, filters and deep links. Renaming a custom region updates every condition and intervention in it. A region can only be deleted once nothing uses it. The standard regions stay fixed so backups remain compatible.
+- **Formatted notes.** Text fields render a safe Markdown subset: `#` headings, `-` and `1.` lists, `**bold**`, `_italic_`, `` `code` `` and `[label](https://…)` links. All text is HTML-escaped first, raw HTML is never rendered, and only http/https links are allowed (they open in a new tab with `noopener`). Imported documents, which already use `#` and `-`, now display with structure.
+- **Attachments.** Add images (PNG, JPEG, GIF, WebP) and PDFs, up to 10 MB each, to any intervention. The file type is taken from the file's bytes, not its name or reported type, so SVG, HTML and disguised files are refused. Attachments are stored on the device, open in a new tab, print with collections, and are included in backups as base64. Deleting an intervention keeps its attachments so a restore brings them back. Settings shows attachment storage and can purge attachments that belong to deleted entries.
+- **Storage schema v3** (adds `regions` and `media`) with an in-place upgrade. **Backup format v3**, and v1/v2 backups still import. Restored custom regions are matched by name, so they aren't duplicated.
+
 ## Version 0.6: knowledge management (Milestone 3)
 
 - **Condition links (many-to-many).** Link one intervention to any number of conditions, each with its own condition-specific dosage, restrictions and notes. The intervention is never duplicated. Condition pages list both primary and linked interventions, with the link context shown.
@@ -43,8 +51,8 @@ Service workers need localhost or HTTPS, so do not open `index.html` from the fi
 ## Checks
 
 - `npm run build`: syntax-checks every module.
-- `npm run test:unit`: parser, DOCX, Google-mapping, provenance, backup-validation, search-ranking, review-due and app-shell tests. The shell tests check that every cached and manifest asset exists, that paths are relative, that there are no third-party URLs, and that the Pages workflow publishes every file.
-- `npm run test:browser`: four Playwright suites (`smoke.py`, `import-browser.py`, `features-browser.py`, `knowledge-browser.py`). They need Python Playwright and Chromium. If Chromium is not on `PATH`, set `PT_ATLAS_CHROMIUM` to its executable.
+- `npm run test:unit`: parser, DOCX, Google-mapping, provenance, backup-validation, search-ranking, review-due, Markdown-safety, attachment-sniffing and app-shell tests. The shell tests check that every cached and manifest asset exists, that paths are relative, that there are no third-party URLs, and that the Pages workflow publishes every file.
+- `npm run test:browser`: five Playwright suites (`smoke.py`, `import-browser.py`, `features-browser.py`, `knowledge-browser.py`, `content-browser.py`). They need Python Playwright and Chromium. If Chromium is not on `PATH`, set `PT_ATLAS_CHROMIUM` to its executable.
 
 ---
 
@@ -54,7 +62,7 @@ Service workers need localhost or HTTPS, so do not open `index.html` from the fi
 
 - Whole-folder Google Drive ingestion and reviewed re-sync (selected-document import works; see GOOGLE_SETUP.md). A live Google account has not been tested.
 - Optional cloud sync (Supabase auth, RLS, multi-device conflicts, write queue). The app never requires an account.
-- Editable body-region taxonomy, rich text and media attachments.
+- Renaming or hiding the ten standard body regions; image annotation and video attachments.
 - Safari/iPhone install testing on a physical device.
 
 **Important:** This is a personal knowledge organizer, not a validated clinical decision-support system. No clinical instructions are seeded. Verify protocols against patient-specific orders. Do not store patient-identifying data. Local browser data can be cleared, so export regular backups.

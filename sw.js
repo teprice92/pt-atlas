@@ -1,5 +1,5 @@
-const CACHE='pt-atlas-shell-v6';
-const ASSETS=['./','./index.html','./styles.css','./app.js','./import-tools.mjs','./docx-import.mjs','./google-import.mjs','./icons.mjs','./backup.mjs','./icon.svg','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png','./icons/maskable-512.png','./icons/apple-touch-icon.png'];
+const CACHE='pt-atlas-shell-v7';
+const ASSETS=['./','./index.html','./styles.css','./app.js','./import-tools.mjs','./docx-import.mjs','./google-import.mjs','./icons.mjs','./backup.mjs','./media.mjs','./markdown.mjs','./icon.svg','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png','./icons/maskable-512.png','./icons/apple-touch-icon.png'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('pt-atlas-')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',event=>{

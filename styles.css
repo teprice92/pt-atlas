@@ -38,10 +38,12 @@ a{color:var(--link)}
 .shell.collapsed{--side:84px}
 .shell{background:linear-gradient(90deg,var(--surface) calc(var(--side) - 1px),var(--line) calc(var(--side) - 1px) var(--side),transparent var(--side))}
 .side{position:sticky;top:0;height:100vh;padding:22px 14px;display:flex;flex-direction:column;gap:26px;border-right:1px solid var(--line);background:var(--surface);overflow:hidden}
-.brand{display:flex;align-items:center;gap:12px;padding:4px 8px;min-width:0}
+.brand{display:flex;align-items:center;gap:12px;padding:4px 8px;min-width:0;color:inherit;text-decoration:none;border-radius:14px}
+.brand:hover .wordmark strong{color:var(--link)}
+.mobile-brand{color:inherit;text-decoration:none;border-radius:10px}
 .mark{flex:none;display:block;border-radius:24%}
 .wordmark{min-width:0}
-.wordmark strong{display:block;font-size:19px;font-weight:700;letter-spacing:-.02em;white-space:nowrap}
+.wordmark{display:block}.wordmark strong{display:block;font-size:19px;font-weight:700;letter-spacing:-.02em;white-space:nowrap}
 .wordmark small{display:block;font-size:11.5px;color:var(--ink-3);white-space:nowrap}
 .nav{display:grid;gap:4px}
 .nav button{display:flex;align-items:center;gap:12px;border:0;background:none;color:var(--ink-2);padding:11px 13px;border-radius:12px;font-weight:550;font-size:15px;text-align:left;white-space:nowrap}
@@ -291,6 +293,35 @@ mark{background:color-mix(in srgb,var(--blue) 22%,transparent);color:inherit;bor
 .order{display:flex;gap:2px}
 .print-only{display:none}
 @media (max-width:800px){.phase{grid-template-columns:32px minmax(0,1fr);gap:10px}.phase-num{width:32px;height:32px;font-size:14px}.phase:not(:last-child)::before{left:15px;top:34px}.phase-title{flex-direction:column}.collection-list>li{grid-template-columns:28px minmax(0,1fr)}.collection-list .order{grid-column:2;justify-content:flex-end}}
+/* ——— Formatted notes, regions, attachments ——— */
+.prose.md{white-space:normal}
+.prose.md>:first-child{margin-top:0}.prose.md>:last-child{margin-bottom:0}
+.prose.md p{margin:0 0 .75em}
+.prose.md h3,.prose.md h4,.prose.md h5{margin:1.1em 0 .4em;letter-spacing:-.015em}
+.prose.md h3{font-size:19px}.prose.md h4{font-size:17px}.prose.md h5{font-size:15px}
+.prose.md ul,.prose.md ol{margin:0 0 .75em;padding-left:1.4em}
+.prose.md li{margin:.2em 0}
+.prose.md code{font-family:var(--mono);font-size:.88em;background:var(--surface-2);padding:1px 6px;border-radius:6px}
+.prose.md a{color:var(--link);text-underline-offset:3px}
+.phase-grid .prose.md{font-size:15px}
+.format-hint{margin:-4px 0 0}
+.tile-icon.small{width:34px;height:34px;border-radius:10px;flex:none}
+.region-list li{justify-content:flex-start}
+.region-input{flex:1;min-width:0;min-height:38px;border-radius:10px;border:1px solid var(--line-2);background:var(--canvas);padding:7px 12px;font-size:15px;color:var(--ink)}
+.region-list .row-meta{white-space:nowrap;margin:0}
+.attachments{margin-top:16px}
+.media-grid{list-style:none;padding:0;margin:16px 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+.media-grid li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 4px;align-items:start}
+.media-thumb{grid-column:1/-1;display:grid;place-items:center;aspect-ratio:4/3;border-radius:14px;overflow:hidden;background:var(--surface-2);border:1px solid var(--line);color:var(--ink-3);text-decoration:none}
+.media-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.media-thumb.pdf{gap:4px;font:600 11px var(--mono);letter-spacing:.1em}
+.media-meta{display:grid;min-width:0}
+.media-name{font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.media-meta .row-meta{margin:0;font-size:12px}
+.filepick-btn{cursor:pointer;position:relative}
+.filepick-btn:focus-within{outline:3px solid color-mix(in srgb,var(--blue) 70%,transparent);outline-offset:2px}
+.print-media{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.print-media img{max-width:45%;max-height:220px;border:1px solid #ccc;border-radius:6px}
 @media print{
  :root,:root[data-theme="dark"]{--canvas:#fff;--surface:#fff;--surface-2:#f3f5f8;--ink:#000;--ink-2:#222;--ink-3:#444;--line:#ccc;color-scheme:light}
  .side,.topbar,.tabbar,.footer,.no-print,.notice,.skip,.actions{display:none!important}

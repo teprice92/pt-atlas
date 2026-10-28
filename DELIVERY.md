@@ -1,6 +1,11 @@
-# PT Atlas delivery — version 0.5
+# PT Atlas delivery — version 0.6
 
-## Version 0.5 summary
+## Version 0.6 summary
+
+Milestone 3 knowledge management: many-to-many condition links with condition-specific details, structured protocol phases, revision history with restore and recovery of deleted entries, printable collections, review-due indicators, and ranked search. IndexedDB schema v2 upgrades v1 in place. Backups are now version 2, and version 1 backups still import. Verified locally: `npm run build`, 24 unit tests, and all four Playwright suites passed.
+
+## Version 0.5 notes
+
 
 Redesigned brand mark and interface (see README), condition tabs, filters, new review/setup fields, hash routing, storage-persistence status, and removal of third-party font requests. Verified locally in this session: `npm run build`, 18 unit tests, and all three Playwright suites (smoke, import, features) passed against the bundled Chromium. Previous version notes follow.
 

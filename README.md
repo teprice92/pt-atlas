@@ -4,6 +4,16 @@ An offline-first, installable personal library of physical therapy interventions
 
 Target URL once Pages is enabled: https://teprice92.github.io/pt-atlas/
 
+## Version 0.6: knowledge management (Milestone 3)
+
+- **Condition links (many-to-many).** Link one intervention to any number of conditions, each with its own condition-specific dosage, restrictions and notes. The intervention is never duplicated. Condition pages list both primary and linked interventions, with the link context shown.
+- **Structured protocol phases.** Each condition's Protocols tab holds ordered phases. A phase records a name, timeframe, objectives, restrictions and precautions, criteria to progress, linked interventions, source and source date. Phases can be reordered. Existing free-text protocol notes are kept and shown under the phases. Nothing is pre-filled: phases are entered from the treating provider's protocol.
+- **Revision history.** Each edit keeps the previous version, up to 25 per entry. Earlier versions can be restored from the detail page or the condition Overview tab. Deleting an intervention or condition records a snapshot, including its links and phases, so it can be restored from Settings → Recently deleted.
+- **Collections.** Ordered, printable sets of interventions (Collections in the sidebar, or from Library). Add items from any intervention page and reorder them. Print gives a clean handout without app chrome, and holds no patient information.
+- **Review indicators.** A "Review due" badge and filter appear when a reviewed entry hasn't been re-reviewed in 12 months. The home "Need review" stat opens the review queue.
+- **Search.** Results are ranked (title matches first), and condition-link text and protocol phases are searched. Matches are highlighted.
+- **Storage schema v2** with an in-place upgrade from v1. **Backup format v2** includes links, phases, collections and revisions, and version 1 backups still import. When a backup is restored into a fresh install, empty starter conditions with the same name are replaced. A same-named condition that has content stops the import, and nothing is changed.
+
 ## Version 0.5: redesign, routing and knowledge-management polish
 
 **Brand.** A new original mark: a summit-shaped "A" in the brand blue→teal gradient, with a column of vertebrae in its open interior that widen toward the base (a spine motif). Shipped as `icon.svg` plus PNG app icons (`icons/`, including a maskable icon and an Apple touch icon).
@@ -33,8 +43,8 @@ Service workers need localhost or HTTPS, so do not open `index.html` from the fi
 ## Checks
 
 - `npm run build`: syntax-checks every module.
-- `npm run test:unit`: parser, DOCX, Google-mapping, provenance and app-shell tests. The shell tests check that every cached and manifest asset exists, that paths are relative, that there are no third-party URLs, and that the Pages workflow publishes every file.
-- `npm run test:browser`: three Playwright suites (`smoke.py`, `import-browser.py`, `features-browser.py`). They need Python Playwright and Chromium. If Chromium is not on `PATH`, set `PT_ATLAS_CHROMIUM` to its executable.
+- `npm run test:unit`: parser, DOCX, Google-mapping, provenance, backup-validation, search-ranking, review-due and app-shell tests. The shell tests check that every cached and manifest asset exists, that paths are relative, that there are no third-party URLs, and that the Pages workflow publishes every file.
+- `npm run test:browser`: four Playwright suites (`smoke.py`, `import-browser.py`, `features-browser.py`, `knowledge-browser.py`). They need Python Playwright and Chromium. If Chromium is not on `PATH`, set `PT_ATLAS_CHROMIUM` to its executable.
 
 ---
 
@@ -44,7 +54,7 @@ Service workers need localhost or HTTPS, so do not open `index.html` from the fi
 
 - Whole-folder Google Drive ingestion and reviewed re-sync (selected-document import works; see GOOGLE_SETUP.md). A live Google account has not been tested.
 - Optional cloud sync (Supabase auth, RLS, multi-device conflicts, write queue). The app never requires an account.
-- Editable body-region taxonomy, structured protocol-phase entities, a separate many-to-many link table with per-link restrictions, revision history, rich text, collections and media attachments.
+- Editable body-region taxonomy, rich text and media attachments.
 - Safari/iPhone install testing on a physical device.
 
 **Important:** This is a personal knowledge organizer, not a validated clinical decision-support system. No clinical instructions are seeded. Verify protocols against patient-specific orders. Do not store patient-identifying data. Local browser data can be cleared, so export regular backups.

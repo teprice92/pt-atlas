@@ -23,6 +23,13 @@ const paths={
  doc:'<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/>',
  wifi:'<path d="M2.5 9a14 14 0 0 1 19 0M5.5 12.5a9.5 9.5 0 0 1 13 0M8.6 16a5 5 0 0 1 6.8 0"/><circle cx="12" cy="19.3" r="1" fill="currentColor"/>',
  database:'<ellipse cx="12" cy="5.5" rx="7.5" ry="2.5"/><path d="M4.5 5.5v13c0 1.4 3.4 2.5 7.5 2.5s7.5-1.1 7.5-2.5v-13M4.5 12c0 1.4 3.4 2.5 7.5 2.5s7.5-1.1 7.5-2.5"/>',
+ up:'<path d="m6 15 6-6 6 6"/>',
+ down:'<path d="m6 9 6 6 6-6"/>',
+ collection:'<rect x="3.5" y="7" width="17" height="13" rx="2.5"/><path d="M6 4h12M8.5 1.8h7"/>',
+ link:'<path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/>',
+ history:'<path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3.5 4v4h4"/><path d="M12 7.5V12l3 2"/>',
+ print:'<path d="M7 9V3.5h10V9"/><rect x="3.5" y="9" width="17" height="8" rx="2"/><path d="M7 14h10v6.5H7z"/>',
+ phases:'<circle cx="5" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><path d="M5 8v8M10 6h10M10 12h7M10 18h10"/>',
  // Body regions
  hip:'<path d="M3.5 6c2.2 1.2 4.4 1.2 6 0 .4 2.7 1.3 4.5 2.5 4.5s2.1-1.8 2.5-4.5c1.6 1.2 3.8 1.2 6 0-.4 5-2.6 8-5.2 9.5l-.8 3.5h-5l-.8-3.5C6.1 14 3.9 11 3.5 6z"/><circle cx="8.2" cy="13.5" r="1.4"/><circle cx="15.8" cy="13.5" r="1.4"/>',
  knee:'<path d="M9 2.5v7c0 1.5 1.2 2.5 3 2.5s3-1 3-2.5v-7"/><path d="M9 21.5v-6c0-1.5 1.2-2.5 3-2.5s3 1 3 2.5v6"/><circle cx="17.8" cy="12.5" r="1.6"/>',

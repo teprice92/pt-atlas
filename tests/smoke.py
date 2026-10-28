@@ -15,7 +15,10 @@ try:
   page.goto(f'http://127.0.0.1:{server.server_port}/pt-atlas/')
   page.get_by_role('heading',name='Clinical knowledge,').wait_for()
   page.wait_for_function('navigator.serviceWorker.controller !== null')
-  def action(name): page.get_by_role('button',name=name,exact=True).click()
+  def action(name):
+   page.get_by_role('button',name=name,exact=True).click()
+   if name=='Save intervention': page.locator('#interventionForm').wait_for(state='detached')
+   if name=='Save condition': page.locator('#conditionForm').wait_for(state='detached')
   action('＋ Add intervention');page.get_by_label('Intervention name').fill('Test entry');page.get_by_label('Condition',exact=True).fill('Hip Osteoarthritis');page.get_by_label('Personal clinical notes').fill('Persisted note');action('Save intervention')
   page.get_by_role('heading',name='Test entry',exact=True).wait_for()
   action('Edit intervention');page.get_by_label('Intervention name').fill('Updated entry');action('Save intervention');action('♡ Favorite');page.get_by_role('button',name='♥ Favorited',exact=True).wait_for()

@@ -86,4 +86,4 @@ async function commitImportReview(){
  importBatch=[];textFileMetadata={};view='library';await reload();msg('Imported '+planned.length+' entries locally; '+skipped+' skipped.');
 }
 
-function readImportHistory(value){try{const history=JSON.parse(value||'[]');return Array.isArray(history)?history:[]}catch{return []}}
+function readImportHistory(value){try{const history=JSON.parse(value||'[]');return Array.isArray(history)?history.filter(entry=>entry&&typeof entry==='object'&&!Array.isArray(entry)):[]}catch{return []}}

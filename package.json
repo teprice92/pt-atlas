@@ -1,1 +1,12 @@
-{"name":"pt-atlas","version":"0.2.0","private":true,"scripts":{"build":"node --check app.js && node --check sw.js","test":"python tests/smoke.py"}}
+{
+  "name": "pt-atlas",
+  "version": "0.3.0",
+  "private": true,
+  "scripts": {
+    "build": "node --check app.js && node --check sw.js && node --check import-tools.mjs",
+    "test:unit": "node --test tests/*.test.mjs",
+    "test:browser": "python tests/smoke.py",
+    "test": "npm run test:unit && npm run test:browser"
+  },
+  "type": "module"
+}

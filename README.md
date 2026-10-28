@@ -37,3 +37,13 @@ Upload these files to a static HTTPS host (GitHub Pages, Cloudflare Pages, Netli
 - Multi-condition relational links and revision history
 
 **Important:** This is a personal knowledge organizer, not a validated clinical decision-support system. No clinical instructions are seeded. Verify protocols and patient-specific orders. Do not store patient-identifying data. Local browser data can be cleared; export regular backups.
+
+## Version 0.3: reviewed document imports
+
+On Import, paste text or load a local `.txt`/`.md` file. Choose **Review batch import** to edit titles, regions, conditions, and source text before saving. Optionally split Markdown level 1–2 headings into entries. No clinical classification, dosage, or treatment facts are generated.
+
+Each entry defaults to skipping an existing title/region match. You can explicitly create a separate entry or append imported text to one matching entry. Ambiguous multiple matches cannot be merged. Confirmation summarizes writes; the batch commits in one storage transaction. Merges preserve existing structured fields and retain appended source history. Imports are marked unreviewed, with document title, source URL, import time and available local file modification time. JSON backups preserve these fields.
+
+`npm run build` checks syntax. `npm run test:unit` runs dependency-free parser/provenance tests. `npm run test:browser` needs Python Playwright and Chromium; it verifies the browser workflow. There is no bundling step. The Pages workflow packages `import-tools.mjs` along with the app shell.
+
+Google OAuth/Drive selection, DOCX extraction, and remote document re-sync remain deferred. Google account import will need an OAuth client ID and authorized origin configuration; pasted Google Docs text works without an account connection.

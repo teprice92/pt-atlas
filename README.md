@@ -4,6 +4,17 @@ An offline-first, installable personal library of physical therapy interventions
 
 Target URL once Pages is enabled: https://teprice92.github.io/pt-atlas/
 
+## Version 1.0: Google Drive sync across devices
+
+Settings → **Sync across devices** keeps the library the same on every device where you turn it on. There is no PT Atlas server and no extra account: the library is stored as one file, plus one file per attachment, in the **hidden app folder** of your own Google Drive (`drive.appdata` permission). Only PT Atlas can read that folder, and it counts toward your Drive storage.
+
+- **How merging works.** Each device remembers the version it last synced. On each sync it compares its copy, the Drive copy and that version, so it knows which side changed what. Changes from different devices combine, deletions carry over, and an edit beats a deletion of the same entry. If two devices edited the same entry, the newer edit wins and the other version is saved in that entry's revision history, where Restore brings it back.
+- **When it runs.** Turning sync on uploads or merges immediately. While connected to Google, edits sync a few seconds after you save, every 5 minutes, and when the device comes back online. Edits made offline are simply merged on the next sync. Sign-in lasts for the browser session; after a restart, the sync pill shows "connect Google to resume" and **Sync now** reconnects. Background sync never redraws a form you're typing in.
+- **Starter conditions** created on each device are merged rather than duplicated. Custom regions with the same name are combined.
+- **Turn off sync** stops syncing on that device and keeps both copies. Turning it back on later merges the two copies without deleting anything, so an entry deleted on another device in the meantime can reappear here. **Remove synced copy from Google Drive** deletes the app-folder files.
+- Settings (theme, Google project) stay per device. Patient-identifying information must still never be stored.
+- **Privacy Policy** (`privacy.html`) and **Terms of Service** (`terms.html`) are static pages, linked from the app footer and Settings, cached for offline use, and ready for Google's branding page. The privacy policy describes exactly what the app does with Google data, including the required Limited Use statement. Have them reviewed if you need formal legal sign-off.
+
 ## Version 0.9: label matching for imports (no AI)
 
 Imports can fill structured fields straight from the labels already in your documents. This is plain pattern matching that runs on your device: no AI or LLM, no API key, and nothing is sent anywhere. It is on by default and can be switched off at the top of the Import page; the choice is remembered.
@@ -87,8 +98,8 @@ Service workers need localhost or HTTPS, so do not open `index.html` from the fi
 ## Checks
 
 - `npm run build`: syntax-checks every module.
-- `npm run test:unit`: parser, DOCX, Google-mapping, provenance, backup-validation, search-ranking, review-due, Markdown-safety, attachment-sniffing, label-matching and app-shell tests. The shell tests check that every cached and manifest asset exists, that paths are relative, that there are no third-party URLs, and that the Pages workflow publishes every file.
-- `npm run test:browser`: seven Playwright suites (`smoke.py`, `import-browser.py`, `features-browser.py`, `knowledge-browser.py`, `content-browser.py`, `google-sync-browser.py`, `mapping-browser.py`). They need Python Playwright and Chromium. If Chromium is not on `PATH`, set `PT_ATLAS_CHROMIUM` to its executable.
+- `npm run test:unit`: parser, DOCX, Google-mapping, provenance, backup-validation, search-ranking, review-due, Markdown-safety, attachment-sniffing, label-matching, two-device sync and app-shell tests. The shell tests check that every cached and manifest asset exists, that paths are relative, that there are no third-party URLs, and that the Pages workflow publishes every file.
+- `npm run test:browser`: eight Playwright suites (`smoke.py`, `import-browser.py`, `features-browser.py`, `knowledge-browser.py`, `content-browser.py`, `google-sync-browser.py`, `mapping-browser.py`, `sync-browser.py`). They need Python Playwright and Chromium. If Chromium is not on `PATH`, set `PT_ATLAS_CHROMIUM` to its executable.
 
 ---
 
@@ -97,7 +108,7 @@ Service workers need localhost or HTTPS, so do not open `index.html` from the fi
 ## Still deferred
 
 - A live Google account has not been tested (mocked in CI). One-click whole-folder import is intentionally not supported (see GOOGLE_SETUP.md).
-- Optional cloud sync (Supabase auth, RLS, multi-device conflicts, write queue). The app never requires an account.
+- Shared multi-user libraries (would need a backend such as Supabase). Personal sync uses Google Drive; the app never requires an account.
 - Renaming or hiding the ten standard body regions; image annotation and video attachments.
 - Safari/iPhone install testing on a physical device.
 

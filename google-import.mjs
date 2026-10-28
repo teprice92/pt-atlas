@@ -1,7 +1,8 @@
 export const DRIVE_SCOPE='https://www.googleapis.com/auth/drive.file';
+export const APPDATA_SCOPE='https://www.googleapis.com/auth/drive.appdata';
 const DOC_MIME='application/vnd.google-apps.document';
 export const MAX_DOCS=25,MAX_SYNC_DOCS=100;
-let readyPromise, accessToken='', expiresAt=0, session=0, granted=false;
+let readyPromise, accessToken='', expiresAt=0, session=0, granted=false, grantedScopes=new Set();
 export function validateGoogleConfig(config){
   if(!/^[a-zA-Z0-9._-]+\.apps\.googleusercontent\.com$/.test(config?.clientId?.trim()||'')||!config.apiKey?.trim()||!/^\d+$/.test(config.projectNumber?.trim()||''))throw Error('Enter a web OAuth client ID, Picker API key, and numeric Google Cloud project number.');
   return {clientId:config.clientId.trim(),apiKey:config.apiKey.trim(),projectNumber:config.projectNumber.trim()};
@@ -20,18 +21,21 @@ export function prepareGoogle(){
   })).catch(error=>{readyPromise=null;throw error;});
   return readyPromise;
 }
-function token(config){
-  if(accessToken&&Date.now()<expiresAt)return Promise.resolve(accessToken);
+// Access tokens are kept in memory only. Scopes are requested incrementally: imports need drive.file; sync adds
+// drive.appdata (the hidden per-app folder) only when the user turns sync on.
+function token(config,scopes=[DRIVE_SCOPE]){
+  if(accessToken&&Date.now()<expiresAt&&scopes.every(scope=>grantedScopes.has(scope)))return Promise.resolve(accessToken);
+  const wanted=[...new Set([...grantedScopes,...scopes])],adding=scopes.some(scope=>!grantedScopes.has(scope));
   return new Promise((resolve,reject)=>{
     const attempt=session;let settled=false;const fail=message=>{if(settled)return;settled=true;clearTimeout(timer);reject(Error(message));};const timer=setTimeout(()=>fail('Google sign-in timed out. Please retry.'),120000);
-    const client=google.accounts.oauth2.initTokenClient({client_id:config.clientId,scope:DRIVE_SCOPE,include_granted_scopes:false,
-      callback:response=>{if(settled)return;clearTimeout(timer);if(attempt!==session)return reject(Error('Google import was disconnected.'));
-        if(response.error||!response.access_token)return fail('Google access was denied. No document was imported.');
-        if(!google.accounts.oauth2.hasGrantedAllScopes(response,DRIVE_SCOPE))return fail('Google did not grant access to selected files.');
-        settled=true;granted=true;accessToken=response.access_token;expiresAt=Date.now()+Math.max(0,Number(response.expires_in||0)-60)*1000;resolve(accessToken);
+    const client=google.accounts.oauth2.initTokenClient({client_id:config.clientId,scope:wanted.join(' '),include_granted_scopes:true,
+      callback:response=>{if(settled)return;clearTimeout(timer);if(attempt!==session)return reject(Error('Google access was disconnected.'));
+        if(response.error||!response.access_token)return fail('Google access was denied. Nothing was imported or synced.');
+        if(!google.accounts.oauth2.hasGrantedAllScopes(response,...scopes))return fail(scopes.includes(APPDATA_SCOPE)?'Google did not grant access to the PT Atlas sync folder.':'Google did not grant access to selected files.');
+        settled=true;granted=true;accessToken=response.access_token;grantedScopes=new Set([...grantedScopes,...String(response.scope||scopes.join(' ')).split(' ').filter(Boolean)]);expiresAt=Date.now()+Math.max(0,Number(response.expires_in||0)-60)*1000;resolve(accessToken);
       },error_callback:()=>fail('Google sign-in was cancelled or the popup was blocked. Please retry.')});
-    // Ask for consent the first time in a session; afterwards Google can reuse the existing grant without a consent screen.
-    client.requestAccessToken({prompt:granted?'':'consent'});
+    // Ask for consent the first time in a session or when adding a permission; otherwise Google reuses the grant.
+    client.requestAccessToken({prompt:granted&&!adding?'':'consent'});
   });
 }
 function picker(config,bearer){return new Promise((resolve,reject)=>{
@@ -85,7 +89,7 @@ export async function chooseGoogleDocuments(configuration,{split=false}={}){
 }
 export const googleConnected=()=>!!accessToken&&Date.now()<expiresAt;
 // Signs in (or reuses a live token) without opening Picker. Must run from a click so the popup is allowed.
-export async function connectGoogle(configuration){const config=validateGoogleConfig(configuration);if(!googleReady())throw Error('Load Google connection first.');await token(config);return true}
+export async function connectGoogle(configuration,scopes=[DRIVE_SCOPE]){const config=validateGoogleConfig(configuration);if(!googleReady())throw Error('Load Google connection first.');await token(config,scopes);return true}
 // One-way re-sync: compares Drive modified times for documents imported earlier. drive.file keeps access to files
 // this app was given through Picker, so no broader Drive permission is needed. Unavailable files are reported, not fatal.
 export async function checkGoogleUpdates(linked,bearer,{fetcher=fetch}={}){
@@ -100,9 +104,10 @@ export async function checkGoogleUpdates(linked,bearer,{fetcher=fetch}={}){
   }
   return results;
 }
-export async function googleToken(configuration){const config=validateGoogleConfig(configuration);if(!googleReady())throw Error('Load Google connection first.');return token(config)}
+export async function googleToken(configuration,scopes=[DRIVE_SCOPE]){const config=validateGoogleConfig(configuration);if(!googleReady())throw Error('Load Google connection first.');return token(config,scopes)}
+export const googleHasScope=scope=>googleConnected()&&grantedScopes.has(scope);
 export function disconnectGoogle(){
-  granted=false;
+  granted=false;grantedScopes=new Set();
   session++;const previous=accessToken;accessToken='';expiresAt=0;
   if(previous&&globalThis.google?.accounts?.oauth2)google.accounts.oauth2.revoke(previous,()=>{});
 }

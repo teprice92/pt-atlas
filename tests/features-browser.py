@@ -64,7 +64,12 @@ try:
   # Sidebar collapse persists; keyboard shortcut focuses search.
   page.get_by_role('button',name='Collapse sidebar').click();page.reload();page.get_by_role('button',name='Expand sidebar').wait_for()
   page.locator('body').press('/');assert page.evaluate("document.activeElement.id")=='globalSearch'
+  # Privacy and terms pages are reachable from the app and load offline once cached.
+  page.goto(f'http://127.0.0.1:{server.server_port}/pt-atlas/#/settings');page.locator('.footer').get_by_role('link',name='Privacy').click();page.get_by_role('heading',name='Privacy Policy',exact=True).wait_for()
+  page.get_by_text('including the Limited Use requirements',exact=False).wait_for();page.locator('.legal-top').get_by_role('link',name='Terms').click();page.get_by_role('heading',name='Terms of Service',exact=True).wait_for()
+  context.set_offline(True);page.reload();page.get_by_role('heading',name='Terms of Service',exact=True).wait_for();page.goto(f'http://127.0.0.1:{server.server_port}/pt-atlas/privacy.html');page.get_by_role('heading',name='Privacy Policy',exact=True).wait_for();context.set_offline(False)
+  page.get_by_role('link',name='PT Atlas home').click();page.get_by_role('heading',name='Clinical knowledge,').wait_for()
   assert not external,external
   assert not errors,errors
-  browser.close();print('PASS: theme persistence; storage status; setup/review fields; library and search filters; region page; condition tabs with keyboard; hash routing refresh/back/deep link; export of new fields; sidebar collapse; search shortcut; no third-party requests')
+  browser.close();print('PASS: theme persistence; storage status; setup/review fields; library and search filters; region page; condition tabs with keyboard; hash routing refresh/back/deep link; export of new fields; sidebar collapse; search shortcut; privacy/terms pages incl. offline; no third-party requests')
 finally: server.shutdown()

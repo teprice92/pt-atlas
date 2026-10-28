@@ -6,8 +6,17 @@ PT Atlas uses a browser OAuth token flow and Google Picker. Configuration is opt
 
 1. Create or select a project at https://console.cloud.google.com/.
 2. Enable **Google Picker API**, **Google Drive API**, and **Google Docs API** in APIs & Services → Library.
-3. In Google Auth Platform, configure the app name, support contact and audience. For External apps in Testing, add the Google accounts you will test with as test users. Review Google's publishing/verification requirements before making the integration available to others.
-4. Configure Data Access for the scope `https://www.googleapis.com/auth/drive.file`. PT Atlas requests this selected-file scope, not access to your entire Drive. Google describes this scope as allowing management of selected files; PT Atlas uses it only for GET requests and does not modify documents. Documents must be explicitly selected in Picker. Picker allows browsing folders and selecting up to 25 native Google Docs at once.
+3. In Google Auth Platform → **Branding**, enter:
+   - App name: `PT Atlas`
+   - App logo: the 120 × 120 PNG of the PT Atlas mark
+   - Application home page: `https://teprice92.github.io/pt-atlas/`
+   - Privacy policy link: `https://teprice92.github.io/pt-atlas/privacy.html`
+   - Terms of service link: `https://teprice92.github.io/pt-atlas/terms.html`
+   - Authorized domain: `teprice92.github.io`
+   - Support and developer contact emails
+
+   Then configure the audience. For External apps in Testing, add the Google accounts you will test with as test users. Review Google's publishing/verification requirements before making the integration available to others.
+4. Configure Data Access for the scopes `https://www.googleapis.com/auth/drive.file` (imports) and `https://www.googleapis.com/auth/drive.appdata` (device sync). Neither is a restricted scope, so no paid security assessment applies. The Data Access page labels each scope's sensitivity; follow Google's current verification guidance before publishing the app beyond your test users. PT Atlas requests this selected-file scope, not access to your entire Drive. Google describes this scope as allowing management of selected files; PT Atlas uses it only for GET requests and does not modify documents. Documents must be explicitly selected in Picker. Picker allows browsing folders and selecting up to 25 native Google Docs at once.
 5. Create an OAuth client of type **Web application**. Add these Authorized JavaScript origins as applicable:
    - `https://teprice92.github.io` (origin only; no `/pt-atlas/` path)
    - `http://localhost:8080` for the README's local server
@@ -42,6 +51,12 @@ Import → Connect Google Docs → **Google connection setup** stores the same t
 2. **Import → Choose Google Docs.** Pick up to 25 native Google Docs. To bring in a folder, open it in the picker and select the documents inside it (Shift-click selects a range). Optionally split headings into separate entries. Labelled sections such as "Dosage:" or a "Precautions" Heading 3 fill the matching fields (see the README's label table). Every draft goes through the review screen before anything is saved.
 3. **Import → Check imported Docs for updates.** PT Atlas compares each linked document's modified time in Drive with the version you imported, then shows a line-by-line diff for each changed entry. For each one you choose **Skip for now** (the default; it is offered again next time), **Replace the imported text**, or **Append the new version to my notes**. New sections can be added as new entries. Sections removed from the document leave your entries untouched. Replaced versions stay in revision history, and updated entries are marked Needs review. If you edited an entry after importing it, the review warns you before you replace it. Documents that were deleted, trashed or are no longer shared are reported and skipped.
 4. **Disconnect Google** clears the in-memory token and asks Google to revoke it. To remove the app's access entirely, use https://myaccount.google.com/connections.
+
+### Sync across devices
+
+Settings → Sync across devices → **Turn on Google Drive sync** asks Google for one more permission, the hidden app folder (`drive.appdata`). PT Atlas keeps the library there as `pt-atlas-library.json`, with one `pt-atlas-media-…` file per attachment. You can't browse this folder in Drive; Drive → Settings → Manage apps shows PT Atlas and lets you delete its hidden data. Turn sync on in each browser or device you use. **Remove synced copy from Google Drive** deletes these files from inside the app.
+
+To test it: turn sync on in two browsers signed in to the same Google account, add an entry in one, then press Sync now in the other.
 
 ### Why whole folders can't be imported in one click
 

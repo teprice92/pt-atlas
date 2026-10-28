@@ -1,6 +1,10 @@
-# PT Atlas delivery — version 0.9
+# PT Atlas delivery — version 1.0
 
-## Version 0.9 summary
+## Version 1.0 summary
+
+Google Drive sync across devices through the hidden app folder (`drive.appdata`), with no server. The merge is three-way: changes combine, deletions propagate, and conflicts keep the newer edit while the other version goes into revision history. Attachments sync too, and starter conditions are de-duplicated. It is verified locally with a two-device browser test against an in-memory fake Drive, plus unit tests for merging, retries on concurrent writes and malformed Drive data. A live Google account still needs a manual check once the Google Cloud project exists.
+
+## Version 0.9 notes
 
 Deterministic label matching for imports: paste, files, Google Docs and Google re-sync all fill structured fields from labels already in the document. It uses no AI or LLM, has no key, and makes no network calls. It is on by default with an off switch, and every matched field is shown for review before saving. Verified locally: `npm run build`, 39 unit tests and seven Playwright suites.
 

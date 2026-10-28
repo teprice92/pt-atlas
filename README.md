@@ -4,6 +4,33 @@ An offline-first, installable personal library of physical therapy interventions
 
 Target URL once Pages is enabled: https://teprice92.github.io/pt-atlas/
 
+## Version 0.9: label matching for imports (no AI)
+
+Imports can fill structured fields straight from the labels already in your documents. This is plain pattern matching that runs on your device: no AI or LLM, no API key, and nothing is sent anywhere. It is on by default and can be switched off at the top of the Import page; the choice is remembered.
+
+**Label forms recognised**
+
+| In your document | Becomes |
+|---|---|
+| `Dosage: 3 x 10` (also `**Dosage:**` or `- Dosage:`) | Dosage is "3 x 10". Indented or list lines directly below are included. |
+| `Precautions:` on its own line, followed by text | Every line until the next blank line |
+| A heading such as `### Setup` (Google: Heading 3) | Everything until the next heading of the same or higher level |
+| A two-column table row: `Dosage` \| `3 x 10` | That row's value |
+
+**Labels and their fields** (case and punctuation don't matter)
+
+- Clinical purpose: purpose, goal(s), indication(s), target impairment, rationale, objective(s), aim(s)
+- Setup & positioning: setup, position, positioning, patient/starting position
+- Instructions: instructions, steps, procedure, technique, how to, directions, method, execution, cues, description
+- Dosage: dosage, dose, sets, reps, sets and reps, frequency, parameters, prescription, volume, duration, intensity
+- Equipment: equipment, materials, supplies, tools
+- Progressions & regressions: progression(s), regression(s), modifications, variations
+- Precautions & contraindications: precaution(s), contraindication(s), cautions, warnings, red flags, safety, restrictions
+- Evidence & references: source(s), reference(s), evidence, citation(s), bibliography
+- Tags: tags, keywords · Condition: condition, diagnosis, Dx · Intervention type: type, category (only if it matches a listed type)
+
+Anything without a recognised label stays in Notes, word for word. The review screen shows every matched field, so you can edit or clear anything before saving. With **Split headings into entries**, use level 1–2 headings for interventions and level 3 headings or label lines for fields. The original document text is kept with each entry, so Google re-sync can re-match fields and can tell your own edits apart from changes in the document.
+
 ## Version 0.8: Google account and Docs re-sync
 
 - **Site-wide Google setup.** Fill in the three public values in `site-config.mjs` once (see [GOOGLE_SETUP.md](GOOGLE_SETUP.md)) and every visitor can sign in with Google, with no per-browser setup. They stay blank until you have a Google Cloud project, and Google features stay off until then. A browser can still use its own project.
@@ -60,8 +87,8 @@ Service workers need localhost or HTTPS, so do not open `index.html` from the fi
 ## Checks
 
 - `npm run build`: syntax-checks every module.
-- `npm run test:unit`: parser, DOCX, Google-mapping, provenance, backup-validation, search-ranking, review-due, Markdown-safety, attachment-sniffing and app-shell tests. The shell tests check that every cached and manifest asset exists, that paths are relative, that there are no third-party URLs, and that the Pages workflow publishes every file.
-- `npm run test:browser`: six Playwright suites (`smoke.py`, `import-browser.py`, `features-browser.py`, `knowledge-browser.py`, `content-browser.py`, `google-sync-browser.py`). They need Python Playwright and Chromium. If Chromium is not on `PATH`, set `PT_ATLAS_CHROMIUM` to its executable.
+- `npm run test:unit`: parser, DOCX, Google-mapping, provenance, backup-validation, search-ranking, review-due, Markdown-safety, attachment-sniffing, label-matching and app-shell tests. The shell tests check that every cached and manifest asset exists, that paths are relative, that there are no third-party URLs, and that the Pages workflow publishes every file.
+- `npm run test:browser`: seven Playwright suites (`smoke.py`, `import-browser.py`, `features-browser.py`, `knowledge-browser.py`, `content-browser.py`, `google-sync-browser.py`, `mapping-browser.py`). They need Python Playwright and Chromium. If Chromium is not on `PATH`, set `PT_ATLAS_CHROMIUM` to its executable.
 
 ---
 

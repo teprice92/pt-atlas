@@ -22,9 +22,12 @@ export function sourceURL(value) {
 }
 export function importRecord(draft, {id, documentTitle, source, importedAt, fileName = '', fileModifiedAt = '', sourceDocumentId = '', sourceType = ''}) {
   if (!draft.name.trim() || !draft.region) throw new Error('Each entry needs a title and body region.');
-  return {id, name: draft.name.trim(), region: draft.region, condition: draft.condition || '', notes: draft.notes,
-    sourceDocumentId, sourceType, source, sourceTitle: documentTitle, sourceFile: fileName, sourceModifiedAt: fileModifiedAt,
-    importedAt, reviewStatus: 'unreviewed', updated: importedAt.slice(0,10), favorite: false, sourceText: draft.notes};
+  // Mapped fields come first so the core identity and provenance fields below always win.
+  const fields = draft.fields && typeof draft.fields === 'object' ? draft.fields : {};
+  return {...fields, ...(Object.keys(fields).length ? {mappedFields: Object.keys(fields)} : {}), id, name: draft.name.trim(), region: draft.region, condition: draft.condition || '', notes: draft.notes,
+    // A mapped "References" section and the document link share the source field; keep both.
+    sourceDocumentId, sourceType, source: [fields.source, source].filter(Boolean).join('\n'), sourceTitle: documentTitle, sourceFile: fileName, sourceModifiedAt: fileModifiedAt,
+    importedAt, reviewStatus: 'unreviewed', updated: importedAt.slice(0,10), favorite: false, sourceText: typeof draft.sourceText === 'string' ? draft.sourceText : draft.notes};
 }
 
 const normalizeTitle = value => String(value || '').normalize('NFKC').trim().replace(/\s+/g, ' ').toLowerCase();
@@ -47,7 +50,7 @@ export function lineDiff(before, after) {
 // Matches a re-read Google Doc against the entries imported from it. A document imported as one entry maps to that
 // entry; a document split by headings maps section titles to entry titles. Nothing is applied here: the result is a
 // plan for the review screen.
-export function syncPlan(entries, text, title) {
+export function syncPlan(entries, text, title, {pristine} = {}) {
   const split = entries.length > 1;
   const sections = documentDrafts(text, title, split);
   const items = [], matched = new Set();
@@ -56,7 +59,7 @@ export function syncPlan(entries, text, title) {
     if (!entry) {items.push({kind: 'new', section});continue;}
     matched.add(entry.id);
     const base = typeof entry.sourceText === 'string' ? entry.sourceText : entry.notes || '';
-    const edited = typeof entry.sourceText === 'string' && (entry.notes || '') !== entry.sourceText;
+    const edited = pristine ? !pristine(entry) : typeof entry.sourceText === 'string' && (entry.notes || '') !== entry.sourceText;
     items.push(base.trim() === section.notes.trim() ? {kind: 'unchanged', entry, section} : {kind: 'changed', entry, section, edited, diff: lineDiff(base.trim(), section.notes.trim())});
   }
   for (const entry of entries) if (!matched.has(entry.id)) items.push({kind: 'missing', entry});

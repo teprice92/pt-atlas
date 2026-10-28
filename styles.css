@@ -322,6 +322,12 @@ mark{background:color-mix(in srgb,var(--blue) 22%,transparent);color:inherit;bor
 .filepick-btn:focus-within{outline:3px solid color-mix(in srgb,var(--blue) 70%,transparent);outline-offset:2px}
 .print-media{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 .print-media img{max-width:45%;max-height:220px;border:1px solid #ccc;border-radius:6px}
+/* ——— Label matching ——— */
+.map-setting{margin-top:24px}
+.map-setting .toggle{align-items:flex-start;line-height:1.5}
+.map-setting .toggle input{margin-top:3px;flex:none}
+fieldset.mapped{margin:0;padding:14px 16px;border:1px solid color-mix(in srgb,var(--teal) 40%,var(--line));border-radius:16px;background:color-mix(in srgb,var(--teal) 5%,transparent);display:grid;gap:12px;min-width:0}
+fieldset.mapped .row-meta{margin:-6px 0 0}
 /* ——— Google sync review ——— */
 .sync-item{border-top:1px solid var(--line);padding-top:16px;margin-top:16px}
 .sync-item h3{margin-bottom:8px}

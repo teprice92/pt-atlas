@@ -1,6 +1,10 @@
-# PT Atlas delivery — version 0.8
+# PT Atlas delivery — version 0.9
 
-## Version 0.8 summary
+## Version 0.9 summary
+
+Deterministic label matching for imports: paste, files, Google Docs and Google re-sync all fill structured fields from labels already in the document. It uses no AI or LLM, has no key, and makes no network calls. It is on by default with an off switch, and every matched field is shown for review before saving. Verified locally: `npm run build`, 39 unit tests and seven Playwright suites.
+
+## Version 0.8 notes
 
 Google sign-in and Drive infrastructure are ready for your credentials. Put the client ID, API key and project number in `site-config.mjs` (steps in GOOGLE_SETUP.md). Added a Settings → Google account panel and a reviewed one-way re-sync of imported Google Docs with line diffs. Picker selection is raised to 25. Verified locally against mocked Google services: `npm run build`, 32 unit tests and six Playwright suites. A live Google account still needs to be checked once the project exists.
 

@@ -13,7 +13,7 @@ PT Atlas uses a browser OAuth token flow and Google Picker. Configuration is opt
    - `http://localhost:8080` for the README's local server
    - Each other exact scheme/host/port used for development
    The popup token flow does not require an app redirect URI. Enable JavaScript and allow Google sign-in popups in the browser.
-6. Create an API key for Picker in the same project. Restrict it to **Websites (HTTP referrers)** such as `https://teprice92.github.io/pt-atlas/*` and `http://localhost:8080/*`. For API restrictions, enable Google Picker API. Confirm Picker's current key restriction requirements if Google reports a blocked key; do not remove restrictions for production.
+6. Create an API key for Picker in the same project. Restrict it to **Websites (HTTP referrers)** such as `https://teprice92.github.io/*` and `http://localhost:8080/*`. For API restrictions, enable Google Picker API. Use an origin-wide referrer pattern because browsers may omit the page path on cross-origin requests. Confirm Picker's current key restriction requirements if Google reports a blocked key; do not remove restrictions for production.
 7. Copy the project's numeric **project number** (not project ID), OAuth client ID, and browser API key.
 
 ## In PT Atlas

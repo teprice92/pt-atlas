@@ -1,24 +1,28 @@
-# PT Atlas delivery
+# PT Atlas delivery — version 0.4
 
-The original starter and implementation plan are recovered in this repository. Version 0.2 adds ten region categories, condition notes, text/Markdown file import into an editable draft, atomic validated JSON merge with overwrite counts, condition rename link preservation, immediate deletion refresh, accessible field labels, scoped service-worker cache cleanup, and truthful cache readiness status.
+The supplied starter and implementation plan are preserved. The working feature branch contains a responsive, local-first library with intervention/condition CRUD, notes and protocol text, favorites, search, IndexedDB persistence, JSON backups, and a scoped offline app shell.
+
+## Document imports
+
+- Local text, Markdown, and DOCX imports run on-device. DOCX extraction handles paragraphs, heading styles, list text, and tables, with archive/XML size limits, checksum validation, and rejection of encrypted or unsafe content. Exact formatting, numbering, images, comments, footnotes, and scanned text are not extracted.
+- Batch review supports heading splitting, editable fields, explicit duplicate skip/create/append decisions, atomic saves, unreviewed labels, and source history.
+- Optional Google sign-in and Picker use the selected-file `drive.file` scope. The integration only performs reads. Users can browse folders and select up to 10 native Google Docs; whole-folder ingestion is not implemented.
+- Google imports retain per-document source URLs, stable document IDs, titles, modified timestamps, and import times. Tokens remain in memory and never enter local storage or backups. Google scripts load only after an explicit connection click.
+- Public configuration fields are available in Import → Google connection setup. See [GOOGLE_SETUP.md](GOOGLE_SETUP.md) for exact API, OAuth, key restriction, and live-account verification steps. No live OAuth account was tested: the owner chose to configure their Google project later.
 
 ## Verification
 
-`npm run build` passes JavaScript syntax checks; this static application needs no bundling. `npm test` runs the Playwright browser suite. Install its test dependency with `pip install playwright` and `python -m playwright install chromium` (or use system Chromium). The local managed sandbox blocked server socket creation, so browser tests have been added but have NOT been verified passing locally. CI runs the suite on pull requests and main.
+Implementation commit `20d0acb566ec92b1c5945f798356ffc48712d7d5` passed GitHub Actions run [40762456346](https://github.com/teprice92/pt-atlas/actions/runs/40762456346), including syntax checks, 14 unit cases, and both Playwright suites. Coverage includes CRUD, backups, persistence, offline reload/CRUD, mobile overflow, document review, duplicate handling, DOCX extraction and invalid inputs, offline DOCX, and mocked Google setup, denial, popup cancellation, Picker cancellation, API denial, multi-document provenance, token privacy, and disconnect. Local server sockets are blocked in the managed sandbox, so browser suites ran in CI. A later documentation-only update corrects the API-key referrer example and these delivery notes.
 
 ## GitHub Pages
 
-1. Review the feature pull request and its Actions checks, then merge it into main.
-2. Open repository Settings → Pages → Build and deployment → Source, select GitHub Actions.
-3. Open Actions → Verify and deploy Pages. Run workflow on main if needed.
-4. Wait for both verify and deploy jobs to succeed. Check the deployment URL https://teprice92.github.io/pt-atlas/ on desktop and phone, reload it, and test offline reload after the service worker takes control.
+1. Review and merge PR #1 into main.
+2. In repository Settings → Pages → Build and deployment → Source, choose GitHub Actions.
+3. In Actions → Verify and deploy Pages, run the workflow on main if needed.
+4. Wait for verify and deploy to succeed; check https://teprice92.github.io/pt-atlas/ on desktop and mobile, reload, then test offline after caching completes.
 
-No live deployment is claimed. GitHub Pages settings were not changed through the connector. Relative assets and the browser suite use the /pt-atlas/ subpath.
+The app uses relative assets under `/pt-atlas/`. New JavaScript modules are included in both the service-worker shell and Pages artifact. The PR is not merged and no live deployment is claimed.
 
 ## Remaining work
 
-Local-only IndexedDB data: export backups regularly; no patient-identifying information. No Google account integration, DOCX extraction, cloud sync, editable body-region taxonomy, multi-condition links, rich protocol phase entities, or review history yet. Condition protocols and notes are editable text. The included suite covers intervention CRUD, favorites, condition rename and notes, reload persistence, backup round-trip, malformed import rejection, search, paste review, offline CRUD/reload, mobile overflow, and browser errors. Broader Safari/iPhone and installability checks remain necessary.
-
-## Version 0.3 update
-
-Structured batch text/Markdown review, explicit duplicate decisions, source provenance and merge history are now implemented. The version 0.2 browser suite passed in GitHub Actions run 40757275901. Six version 0.3 parser/provenance unit cases pass locally; the expanded browser suite awaits CI. Google OAuth and DOCX extraction remain pending.
+Real-account Google verification after configuration; whole-folder ingestion and reviewed document re-sync; optional cloud sync; editable region taxonomy; many-to-many intervention links; structured protocol entities; revision history; Safari/iPhone and installation checks. Local browser data is not synced: export backups regularly and do not store patient-identifying information.

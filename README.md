@@ -47,3 +47,11 @@ Each entry defaults to skipping an existing title/region match. You can explicit
 `npm run build` checks syntax. `npm run test:unit` runs dependency-free parser/provenance tests. `npm run test:browser` needs Python Playwright and Chromium; it verifies the browser workflow. There is no bundling step. The Pages workflow packages `import-tools.mjs` along with the app shell.
 
 Google OAuth/Drive selection, DOCX extraction, and remote document re-sync remain deferred. Google account import will need an OAuth client ID and authorized origin configuration; pasted Google Docs text works without an account connection.
+
+## Version 0.4: DOCX and Google Docs
+
+Import `.docx` alongside text/Markdown files. Extraction runs locally using bounded ZIP decompression and XML parsing: headings, paragraphs, list text, and tables become reviewable text. The 5 MB archive and 8 MB document XML limits reject oversized, encrypted, malformed or damaged files. Images, macros, links, and external entities are not executed or fetched. Exact Word formatting, list numbering, comments, footnotes and images are not imported. DOCX requires a browser supporting `DecompressionStream('deflate-raw')`; otherwise export your document as text. Local DOCX import works offline after the app shell has been cached.
+
+Optional Google Docs connection uses a public web OAuth client ID, restricted Picker API key, and numeric project number. Enter them under Import → Google connection setup. See [GOOGLE_SETUP.md](GOOGLE_SETUP.md) for exact steps. The app requests only `drive.file`, lets you browse folders and select up to 10 Google Docs, preserves per-document provenance, and opens drafts for review. Tokens remain in memory; Disconnect revokes the active token. No files are modified in Google Drive. Whole-folder ingestion and automatic re-sync remain deferred.
+
+The Google workflow is covered by mock authentication/Picker/API browser checks, not a verified live OAuth session. Configure your project values and complete the live-account checklist before relying on the connection. The application remains usable without Google setup.

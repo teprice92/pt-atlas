@@ -20,9 +20,9 @@ export function sourceURL(value) {
   if (!['https:', 'http:'].includes(url.protocol)) throw new Error('Source link must use HTTPS or HTTP.');
   return url.href;
 }
-export function importRecord(draft, {id, documentTitle, source, importedAt, fileName = '', fileModifiedAt = ''}) {
+export function importRecord(draft, {id, documentTitle, source, importedAt, fileName = '', fileModifiedAt = '', sourceDocumentId = '', sourceType = ''}) {
   if (!draft.name.trim() || !draft.region) throw new Error('Each entry needs a title and body region.');
   return {id, name: draft.name.trim(), region: draft.region, condition: draft.condition || '', notes: draft.notes,
-    source, sourceTitle: documentTitle, sourceFile: fileName, sourceModifiedAt: fileModifiedAt,
+    sourceDocumentId, sourceType, source, sourceTitle: documentTitle, sourceFile: fileName, sourceModifiedAt: fileModifiedAt,
     importedAt, reviewStatus: 'unreviewed', updated: importedAt.slice(0,10), favorite: false};
 }

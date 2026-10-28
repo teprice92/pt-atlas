@@ -1,11 +1,11 @@
 {
   "name": "pt-atlas",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "scripts": {
-    "build": "node --check app.js && node --check sw.js && node --check import-tools.mjs",
+    "build": "node --check app.js && node --check sw.js && node --check import-tools.mjs && node --check docx-import.mjs && node --check google-import.mjs",
     "test:unit": "node --test tests/*.test.mjs",
-    "test:browser": "python tests/smoke.py",
+    "test:browser": "python tests/smoke.py && python tests/import-browser.py",
     "test": "npm run test:unit && npm run test:browser"
   },
   "type": "module"

@@ -16,26 +16,29 @@ picker='''window.google=window.google||{};window.gapi={load(name,options){option
 try:
  with sync_playwright() as p:
   browser=p.chromium.launch(executable_path=shutil.which('chromium') or None,args=['--no-sandbox'])
-  context=browser.new_context();page=context.new_page();errors=[];requests=[]
+  context=browser.new_context(accept_downloads=True);page=context.new_page();errors=[];requests=[]
   page.on('pageerror',lambda error:errors.append(str(error)))
   page.on('request',lambda request:requests.append(request.url))
   page.on('dialog',lambda dialog:dialog.accept())
   context.route('https://accounts.google.com/gsi/client',lambda route:route.fulfill(content_type='text/javascript',body=gis))
   context.route('https://apis.google.com/js/api.js',lambda route:route.fulfill(content_type='text/javascript',body=picker))
   def api(route):
-   request=route.request;assert request.headers.get('authorization')=='Bearer test-memory-token'
-   if page.evaluate('Boolean(window.__apiFail)'): route.fulfill(status=403,content_type='application/json',body='{}');return
+   request=route.request
+   cors={'access-control-allow-origin':'*','access-control-allow-headers':'Authorization','access-control-allow-methods':'GET, OPTIONS'}
+   if request.method=='OPTIONS':route.fulfill(status=204,headers=cors);return
+   assert request.headers.get('authorization')=='Bearer test-memory-token'
+   if page.evaluate('Boolean(window.__apiFail)'): route.fulfill(status=403,headers=cors,content_type='application/json',body='{}');return
    first='doc-one' in request.url
    if '/drive/' in request.url: result={'name':'Google Source One' if first else 'Google Source Two','mimeType':'application/vnd.google-apps.document','modifiedTime':'2026-10-28T01:00:00Z'}
    else: result={'body':{'content':[{'paragraph':{'paragraphStyle':{'namedStyleType':'HEADING_1'},'elements':[{'textRun':{'content':'Google Heading One\n' if first else 'Google Heading Two\n'}}]}},{'paragraph':{'elements':[{'textRun':{'content':'Original Google source text\n'}}]}}]}}
-   route.fulfill(content_type='application/json',body=json.dumps(result))
+   route.fulfill(headers=cors,content_type='application/json',body=json.dumps(result))
   context.route('https://www.googleapis.com/drive/v3/files/*',api)
   context.route('https://docs.googleapis.com/v1/documents/*',api)
   page.goto(f'http://127.0.0.1:{server.server_port}/pt-atlas/');page.wait_for_function('navigator.serviceWorker.controller !== null')
   def action(label):page.get_by_role('button',name=label,exact=True).click()
   def importer():page.locator('[data-nav="import"]').first.click()
   def upload(data,name='sample.docx'):page.locator('#textFile').set_input_files({'name':name,'mimeType':'application/vnd.openxmlformats-officedocument.wordprocessingml.document','buffer':data})
-  importer();assert not any('google' in url for url in requests)
+  importer();assert not any(url.startswith(('https://accounts.google.com/','https://apis.google.com/','https://www.googleapis.com/','https://docs.googleapis.com/')) for url in requests)
   upload(docx(xml));page.get_by_text('DOCX text extracted locally.',exact=False).wait_for();text=page.locator('#importText').input_value();assert '# DOCX Heading' in text and '- List source & literal <script>' in text and 'Cell A\tCell B' in text and 'Deleted source' not in text
   page.locator('#splitSections').check();action('Review batch import');assert page.locator('[data-draft]').count()==2;action('Confirm import');page.get_by_text('Imported 2 entries locally; 0 skipped.').wait_for()
   importer();upload(b'broken zip');page.get_by_text('Import failed: Not a valid DOCX ZIP archive.').wait_for();assert page.locator('#importText').input_value()==''

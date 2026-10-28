@@ -322,6 +322,9 @@ mark{background:color-mix(in srgb,var(--blue) 22%,transparent);color:inherit;bor
 .filepick-btn:focus-within{outline:3px solid color-mix(in srgb,var(--blue) 70%,transparent);outline-offset:2px}
 .print-media{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 .print-media img{max-width:45%;max-height:220px;border:1px solid #ccc;border-radius:6px}
+/* ——— Sync ——— */
+button.pill{cursor:pointer;font-family:inherit}
+button.pill:hover{border-color:var(--ink-3)}
 /* ——— Label matching ——— */
 .map-setting{margin-top:24px}
 .map-setting .toggle{align-items:flex-start;line-height:1.5}

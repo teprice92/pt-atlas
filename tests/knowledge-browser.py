@@ -22,7 +22,7 @@ try:
   base=f'http://127.0.0.1:{server.server_port}/pt-atlas/'
   page.goto(base+'icon.svg');page.evaluate(SEED_V1)
   page.goto(base);page.get_by_role('heading',name='Clinical knowledge,').wait_for()
-  assert page.evaluate("new Promise(r=>{const q=indexedDB.open('pt-atlas-library');q.onsuccess=()=>{r([q.result.version,[...q.result.objectStoreNames].sort().join(',')]);q.result.close()}})")==[3,'collections,conditions,interventions,links,media,phases,regions,revisions']
+  assert page.evaluate("new Promise(r=>{const q=indexedDB.open('pt-atlas-library');q.onsuccess=()=>{r([q.result.version,[...q.result.objectStoreNames].sort().join(',')]);q.result.close()}})")==[4,'collections,conditions,interventions,links,media,meta,phases,regions,revisions']
   def go(route):page.goto(base+route);page.wait_for_load_state()
   def action(name):page.get_by_role('button',name=name,exact=True).click()
   # Review-due indicator and filter.
@@ -83,5 +83,5 @@ try:
   fresh.close()
   page.set_viewport_size({'width':390,'height':844});go('#/condition/Hip/Total%20Hip%20Arthroplasty%20(THA)');page.get_by_role('tab',name='Protocols').click();assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth')
   assert not errors,errors
-  browser.close();print('PASS: v1→v3 schema upgrade; review-due indicator/filter; many-to-many condition links with condition-specific details; structured protocol phases with ordering and linked interventions; revision restore; collections with ordering and print view; search over links with highlighting; delete/recover interventions and conditions with links and phases; v2 backup round trip with starter-condition de-duplication and conflict refusal; mobile overflow')
+  browser.close();print('PASS: v1→v4 schema upgrade; review-due indicator/filter; many-to-many condition links with condition-specific details; structured protocol phases with ordering and linked interventions; revision restore; collections with ordering and print view; search over links with highlighting; delete/recover interventions and conditions with links and phases; v2 backup round trip with starter-condition de-duplication and conflict refusal; mobile overflow')
 finally: server.shutdown()

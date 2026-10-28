@@ -28,3 +28,15 @@ test('site config ships blank and holds only public Google values',async()=>{
  assert.deepEqual(Object.keys(SITE_CONFIG.google).sort(),['apiKey','clientId','projectNumber']);
  assert.doesNotMatch(read('site-config.mjs'),/GOCSPX|client_secret|private_key/i);
 });
+test('privacy and terms pages are cached, published, local-only and contain required disclosures',()=>{
+ const assets=read('sw.js'),workflow=read('.github/workflows/deploy.yml');
+ for(const page of ['privacy.html','terms.html']){
+  const html=read(page);assert.ok(assets.includes(`'./${page}'`),page+' cached');assert.match(workflow,new RegExp(` ${page.replace('.','\\.')} `),page+' published');
+  for(const [,ref] of html.matchAll(/<(?:script|link|img)\b[^>]*\b(?:src|href)="([^"]+)"/g))assert.ok(!/^https?:|^\/\//.test(ref),`${page} loads ${ref}`);
+  assert.match(html,/Effective October 28, 2026/);assert.match(html,/href="\.\/#\/"/);assert.doesNotMatch(html,/@gmail\.com/);
+ }
+ const privacy=read('privacy.html');
+ assert.match(privacy,/use and transfer of information received from Google APIs adheres to the <a href="https:\/\/developers\.google\.com\/terms\/api-services-user-data-policy">Google API Services User Data Policy<\/a>, including the Limited Use requirements/);
+ for(const scope of ['drive.file','drive.appdata'])assert.match(privacy,new RegExp(scope.replace('.','\\.')));
+ assert.match(read('terms.html'),/not medical advice/i);
+});

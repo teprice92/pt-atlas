@@ -6,7 +6,16 @@ PT Atlas uses a browser OAuth token flow and Google Picker. Configuration is opt
 
 1. Create or select a project at https://console.cloud.google.com/.
 2. Enable **Google Picker API**, **Google Drive API**, and **Google Docs API** in APIs & Services → Library.
-3. In Google Auth Platform, configure the app name, support contact and audience. For External apps in Testing, add the Google accounts you will test with as test users. Review Google's publishing/verification requirements before making the integration available to others.
+3. In Google Auth Platform → **Branding**, enter:
+   - App name: `PT Atlas`
+   - App logo: the 120 × 120 PNG of the PT Atlas mark
+   - Application home page: `https://teprice92.github.io/pt-atlas/`
+   - Privacy policy link: `https://teprice92.github.io/pt-atlas/privacy.html`
+   - Terms of service link: `https://teprice92.github.io/pt-atlas/terms.html`
+   - Authorized domain: `teprice92.github.io`
+   - Support and developer contact emails
+
+   Then configure the audience. For External apps in Testing, add the Google accounts you will test with as test users. Review Google's publishing/verification requirements before making the integration available to others.
 4. Configure Data Access for the scopes `https://www.googleapis.com/auth/drive.file` (imports) and `https://www.googleapis.com/auth/drive.appdata` (device sync). Neither is a restricted scope, so no paid security assessment applies. The Data Access page labels each scope's sensitivity; follow Google's current verification guidance before publishing the app beyond your test users. PT Atlas requests this selected-file scope, not access to your entire Drive. Google describes this scope as allowing management of selected files; PT Atlas uses it only for GET requests and does not modify documents. Documents must be explicitly selected in Picker. Picker allows browsing folders and selecting up to 25 native Google Docs at once.
 5. Create an OAuth client of type **Web application**. Add these Authorized JavaScript origins as applicable:
    - `https://teprice92.github.io` (origin only; no `/pt-atlas/` path)

@@ -4,6 +4,50 @@ An offline-first, installable personal library of physical therapy interventions
 
 Target URL once Pages is enabled: https://teprice92.github.io/pt-atlas/
 
+## Version 0.9: label matching for imports (no AI)
+
+Imports can fill structured fields straight from the labels already in your documents. This is plain pattern matching that runs on your device: no AI or LLM, no API key, and nothing is sent anywhere. It is on by default and can be switched off at the top of the Import page; the choice is remembered.
+
+**Label forms recognised**
+
+| In your document | Becomes |
+|---|---|
+| `Dosage: 3 x 10` (also `**Dosage:**` or `- Dosage:`) | Dosage is "3 x 10". Indented or list lines directly below are included. |
+| `Precautions:` on its own line, followed by text | Every line until the next blank line |
+| A heading such as `### Setup` (Google: Heading 3) | Everything until the next heading of the same or higher level |
+| A two-column table row: `Dosage` \| `3 x 10` | That row's value |
+
+**Labels and their fields** (case and punctuation don't matter)
+
+- Clinical purpose: purpose, goal(s), indication(s), target impairment, rationale, objective(s), aim(s)
+- Setup & positioning: setup, position, positioning, patient/starting position
+- Instructions: instructions, steps, procedure, technique, how to, directions, method, execution, cues, description
+- Dosage: dosage, dose, sets, reps, sets and reps, frequency, parameters, prescription, volume, duration, intensity
+- Equipment: equipment, materials, supplies, tools
+- Progressions & regressions: progression(s), regression(s), modifications, variations
+- Precautions & contraindications: precaution(s), contraindication(s), cautions, warnings, red flags, safety, restrictions
+- Evidence & references: source(s), reference(s), evidence, citation(s), bibliography
+- Tags: tags, keywords · Condition: condition, diagnosis, Dx · Intervention type: type, category (only if it matches a listed type)
+
+Anything without a recognised label stays in Notes, word for word. The review screen shows every matched field, so you can edit or clear anything before saving. With **Split headings into entries**, use level 1–2 headings for interventions and level 3 headings or label lines for fields. The original document text is kept with each entry, so Google re-sync can re-match fields and can tell your own edits apart from changes in the document.
+
+## Version 0.8: Google account and Docs re-sync
+
+- **Site-wide Google setup.** Fill in the three public values in `site-config.mjs` once (see [GOOGLE_SETUP.md](GOOGLE_SETUP.md)) and every visitor can sign in with Google, with no per-browser setup. They stay blank until you have a Google Cloud project, and Google features stay off until then. A browser can still use its own project.
+- **Google account panel** in Settings: connect, reconnect without a second consent screen, disconnect and revoke. It only uses the selected-files `drive.file` permission, and tokens are never stored.
+- **One-way re-sync.** "Check imported Docs for updates" compares linked documents with Drive and shows a line diff for each changed entry. You choose skip (the default, offered again next time), replace or append, and can add new sections as entries. Removed sections never delete anything, replaced text stays in revision history, and edited entries warn before replacement.
+- **Picker selection raised to 25 documents.** Select the documents inside a folder. Whole-folder reads would need Google's restricted Drive scope, which this app deliberately avoids.
+- Imports now keep the original imported text (`sourceText`), so re-sync can tell your edits apart from changes in Google.
+- No AI or LLM is involved anywhere in import or sync, and no API keys besides your own public Google values.
+
+## Version 0.7: navigation fix, custom regions, formatted notes and attachments
+
+- **Home link.** The PT Atlas logo and name, in the desktop sidebar and the mobile top bar, now link to Home.
+- **Custom body regions.** Settings → Body regions adds your own specialties, such as Pelvic Health or Pediatrics. They appear everywhere the standard ten do: library tiles, editors, filters and deep links. Renaming a custom region updates every condition and intervention in it. A region can only be deleted once nothing uses it. The standard regions stay fixed so backups remain compatible.
+- **Formatted notes.** Text fields render a safe Markdown subset: `#` headings, `-` and `1.` lists, `**bold**`, `_italic_`, `` `code` `` and `[label](https://…)` links. All text is HTML-escaped first, raw HTML is never rendered, and only http/https links are allowed (they open in a new tab with `noopener`). Imported documents, which already use `#` and `-`, now display with structure.
+- **Attachments.** Add images (PNG, JPEG, GIF, WebP) and PDFs, up to 10 MB each, to any intervention. The file type is taken from the file's bytes, not its name or reported type, so SVG, HTML and disguised files are refused. Attachments are stored on the device, open in a new tab, print with collections, and are included in backups as base64. Deleting an intervention keeps its attachments so a restore brings them back. Settings shows attachment storage and can purge attachments that belong to deleted entries.
+- **Storage schema v3** (adds `regions` and `media`) with an in-place upgrade. **Backup format v3**, and v1/v2 backups still import. Restored custom regions are matched by name, so they aren't duplicated.
+
 ## Version 0.6: knowledge management (Milestone 3)
 
 - **Condition links (many-to-many).** Link one intervention to any number of conditions, each with its own condition-specific dosage, restrictions and notes. The intervention is never duplicated. Condition pages list both primary and linked interventions, with the link context shown.
@@ -43,8 +87,8 @@ Service workers need localhost or HTTPS, so do not open `index.html` from the fi
 ## Checks
 
 - `npm run build`: syntax-checks every module.
-- `npm run test:unit`: parser, DOCX, Google-mapping, provenance, backup-validation, search-ranking, review-due and app-shell tests. The shell tests check that every cached and manifest asset exists, that paths are relative, that there are no third-party URLs, and that the Pages workflow publishes every file.
-- `npm run test:browser`: four Playwright suites (`smoke.py`, `import-browser.py`, `features-browser.py`, `knowledge-browser.py`). They need Python Playwright and Chromium. If Chromium is not on `PATH`, set `PT_ATLAS_CHROMIUM` to its executable.
+- `npm run test:unit`: parser, DOCX, Google-mapping, provenance, backup-validation, search-ranking, review-due, Markdown-safety, attachment-sniffing, label-matching and app-shell tests. The shell tests check that every cached and manifest asset exists, that paths are relative, that there are no third-party URLs, and that the Pages workflow publishes every file.
+- `npm run test:browser`: seven Playwright suites (`smoke.py`, `import-browser.py`, `features-browser.py`, `knowledge-browser.py`, `content-browser.py`, `google-sync-browser.py`, `mapping-browser.py`). They need Python Playwright and Chromium. If Chromium is not on `PATH`, set `PT_ATLAS_CHROMIUM` to its executable.
 
 ---
 
@@ -52,9 +96,9 @@ Service workers need localhost or HTTPS, so do not open `index.html` from the fi
 
 ## Still deferred
 
-- Whole-folder Google Drive ingestion and reviewed re-sync (selected-document import works; see GOOGLE_SETUP.md). A live Google account has not been tested.
+- A live Google account has not been tested (mocked in CI). One-click whole-folder import is intentionally not supported (see GOOGLE_SETUP.md).
 - Optional cloud sync (Supabase auth, RLS, multi-device conflicts, write queue). The app never requires an account.
-- Editable body-region taxonomy, rich text and media attachments.
+- Renaming or hiding the ten standard body regions; image annotation and video attachments.
 - Safari/iPhone install testing on a physical device.
 
 **Important:** This is a personal knowledge organizer, not a validated clinical decision-support system. No clinical instructions are seeded. Verify protocols against patient-specific orders. Do not store patient-identifying data. Local browser data can be cleared, so export regular backups.

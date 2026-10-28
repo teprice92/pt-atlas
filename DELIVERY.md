@@ -1,6 +1,18 @@
-# PT Atlas delivery — version 0.6
+# PT Atlas delivery — version 0.9
 
-## Version 0.6 summary
+## Version 0.9 summary
+
+Deterministic label matching for imports: paste, files, Google Docs and Google re-sync all fill structured fields from labels already in the document. It uses no AI or LLM, has no key, and makes no network calls. It is on by default with an off switch, and every matched field is shown for review before saving. Verified locally: `npm run build`, 39 unit tests and seven Playwright suites.
+
+## Version 0.8 notes
+
+Google sign-in and Drive infrastructure are ready for your credentials. Put the client ID, API key and project number in `site-config.mjs` (steps in GOOGLE_SETUP.md). Added a Settings → Google account panel and a reviewed one-way re-sync of imported Google Docs with line diffs. Picker selection is raised to 25. Verified locally against mocked Google services: `npm run build`, 32 unit tests and six Playwright suites. A live Google account still needs to be checked once the project exists.
+
+## Version 0.7 notes
+
+Fixed the logo/name not linking Home. Added custom body regions, safe Markdown formatting in notes, and image/PDF attachments sniffed by content. IndexedDB schema v3 and backup format v3 add regions and media, and older databases and backups still load. Verified locally: `npm run build`, 28 unit tests, and all five Playwright suites passed.
+
+## Version 0.6 notes
 
 Milestone 3 knowledge management: many-to-many condition links with condition-specific details, structured protocol phases, revision history with restore and recovery of deleted entries, printable collections, review-due indicators, and ranked search. IndexedDB schema v2 upgrades v1 in place. Backups are now version 2, and version 1 backups still import. Verified locally: `npm run build`, 24 unit tests, and all four Playwright suites passed.
 

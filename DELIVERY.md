@@ -1,4 +1,10 @@
-# PT Atlas delivery — version 0.4
+# PT Atlas delivery — version 0.5
+
+## Version 0.5 summary
+
+Redesigned brand mark and interface (see README), condition tabs, filters, new review/setup fields, hash routing, storage-persistence status, and removal of third-party font requests. Verified locally in this session: `npm run build`, 18 unit tests, and all three Playwright suites (smoke, import, features) passed against the bundled Chromium. Previous version notes follow.
+
+## Version 0.4 notes
 
 The supplied starter and implementation plan are preserved. The working feature branch contains a responsive, local-first library with intervention/condition CRUD, notes and protocol text, favorites, search, IndexedDB persistence, JSON backups, and a scoped offline app shell.
 

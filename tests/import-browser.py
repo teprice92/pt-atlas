@@ -1,4 +1,4 @@
-import functools, http.server, io, json, shutil, threading, zipfile
+import functools, http.server, io, json, os, shutil, threading, zipfile
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 root=Path(__file__).resolve().parents[1]
@@ -15,7 +15,7 @@ gis='''window.google=window.google||{};window.__authCalls=0;window.__revoked=0;w
 picker='''window.google=window.google||{};window.gapi={load(name,options){options.callback();}};window.google.picker={ViewId:{DOCS:'docs'},Feature:{MULTISELECT_ENABLED:'multi'},Action:{PICKED:'picked',CANCEL:'cancel'},DocsView:class{setMimeTypes(value){window.__mime=value;return this;}setIncludeFolders(){return this;}setSelectFolderEnabled(value){window.__foldersSelectable=value;return this;}},PickerBuilder:class{setDeveloperKey(){return this;}setAppId(){return this;}setOAuthToken(){return this;}setOrigin(){return this;}addView(){return this;}enableFeature(){return this;}setCallback(callback){this.callback=callback;return this;}build(){const callback=this.callback;return {setVisible(visible){if(visible)queueMicrotask(()=>callback(window.__pickerCancel?{action:'cancel'}:{action:'picked',docs:[{id:'doc-one',mimeType:'application/vnd.google-apps.document'},{id:'doc-two',mimeType:'application/vnd.google-apps.document'}]}));}};}}};'''
 try:
  with sync_playwright() as p:
-  browser=p.chromium.launch(executable_path=shutil.which('chromium') or None,args=['--no-sandbox'])
+  browser=p.chromium.launch(executable_path=shutil.which('chromium') or os.environ.get('PT_ATLAS_CHROMIUM') or None,args=['--no-sandbox'])
   context=browser.new_context(accept_downloads=True);page=context.new_page();errors=[];requests=[]
   page.on('pageerror',lambda error:errors.append(str(error)))
   page.on('request',lambda request:requests.append(request.url))
@@ -52,7 +52,7 @@ try:
   page.evaluate('window.__pickerCancel=false;window.__apiFail=true');action('Choose Google Docs');page.get_by_text('Google import failed: Google denied document access.',exact=False).wait_for();assert page.locator('#batchForm').count()==0
   page.evaluate('window.__apiFail=false');page.locator('#googleSplit').check();action('Choose Google Docs');page.get_by_role('heading',name='Review imported entries').wait_for();assert page.locator('[data-draft]').count()==2;page.get_by_text('Source: Google Source One',exact=False).wait_for();action('Confirm import');page.get_by_text('Imported 2 entries locally; 0 skipped.').wait_for()
   page.locator('[data-nav="settings"]').first.click()
-  with page.expect_download() as download:action('↓ Export JSON backup')
+  with page.expect_download() as download:action('Export JSON backup')
   data=json.loads(Path(download.value.path()).read_text());google=[entry for entry in data['interventions'] if entry.get('sourceType')=='google-doc'];assert len(google)==2;assert {entry['sourceDocumentId'] for entry in google}=={'doc-one','doc-two'};assert all(entry['sourceModifiedAt']=='2026-10-28T01:00:00Z' for entry in google)
   stored=page.evaluate('JSON.stringify(localStorage)');assert 'test-memory-token' not in stored;assert 'test-memory-token' not in json.dumps(data)
   importer();action('Disconnect Google');page.get_by_text('Google access disconnected.',exact=False).wait_for();assert page.evaluate('window.__revoked')==1

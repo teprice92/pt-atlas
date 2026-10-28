@@ -1,1 +1,23 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0c1524"><meta name="description" content="Your offline-first physical therapy intervention library"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg" type="image/svg+xml"><title>PT Atlas — Clinical knowledge, anywhere.</title><link rel="stylesheet" href="styles.css"></head><body><div id="app"></div><script type="module" src="app.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#F7F9FC">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="PT Atlas: an offline-first personal library of physical therapy interventions, protocols and precautions.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PT Atlas">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<title>PT Atlas — Clinical knowledge, anywhere.</title>
+<script>try{var t=localStorage.getItem('atlas-theme')||'system';document.documentElement.dataset.theme=t==='dark'||(t==='system'&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'}catch(e){}</script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app"><noscript><p style="padding:40px;font-family:system-ui">PT Atlas needs JavaScript enabled to run.</p></noscript></div>
+<script type="module" src="app.js"></script>
+</body>
+</html>

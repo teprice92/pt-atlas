@@ -6,7 +6,7 @@ const read=path=>readFileSync(new URL(path,root),'utf8');
 test('every service-worker shell asset exists and every local module import is cached',()=>{
  const assets=JSON.parse(read('sw.js').match(/const ASSETS=(\[[^\]]*\])/)[1].replace(/'/g,'"'));
  for(const asset of assets)if(asset!=='./')assert.ok(existsSync(new URL(asset,root)),asset);
- for(const file of ['app.js','import-tools.mjs','docx-import.mjs','google-import.mjs','icons.mjs','backup.mjs','media.mjs','markdown.mjs'])
+ for(const file of ['app.js','import-tools.mjs','docx-import.mjs','google-import.mjs','icons.mjs','backup.mjs','media.mjs','markdown.mjs','site-config.mjs'])
   for(const [,path] of read(file).matchAll(/from '(\.\/[^']+)'/g))assert.ok(assets.includes(path),`${file} imports ${path} which is not cached`);
 });
 test('manifest icons exist and paths are relative for the /pt-atlas/ subpath',()=>{
@@ -21,5 +21,10 @@ test('no third-party fonts, trackers or remote stylesheets in the app shell',()=
 });
 test('Pages workflow publishes every shell asset',()=>{
  const workflow=read('.github/workflows/deploy.yml');
- for(const file of ['index.html','app.js','import-tools.mjs','docx-import.mjs','google-import.mjs','icons.mjs','backup.mjs','media.mjs','markdown.mjs','styles.css','sw.js','manifest.webmanifest','icon.svg','icons'])assert.match(workflow,new RegExp(`[ /]${file.replace('.','\\.')}[ /]`),file);
+ for(const file of ['index.html','app.js','import-tools.mjs','docx-import.mjs','google-import.mjs','icons.mjs','backup.mjs','media.mjs','markdown.mjs','site-config.mjs','styles.css','sw.js','manifest.webmanifest','icon.svg','icons'])assert.match(workflow,new RegExp(`[ /]${file.replace('.','\\.')}[ /]`),file);
+});
+test('site config ships blank and holds only public Google values',async()=>{
+ const {SITE_CONFIG}=await import('../site-config.mjs');
+ assert.deepEqual(Object.keys(SITE_CONFIG.google).sort(),['apiKey','clientId','projectNumber']);
+ assert.doesNotMatch(read('site-config.mjs'),/GOCSPX|client_secret|private_key/i);
 });

@@ -6,10 +6,14 @@ class Quiet(http.server.SimpleHTTPRequestHandler):
  def log_message(self,*args): pass
 server=http.server.ThreadingHTTPServer(('127.0.0.1',0),functools.partial(Quiet,directory=str(root.parent)))
 threading.Thread(target=server.serve_forever,daemon=True).start()
+# Tests run against a blank Google config so the deployed site-config.mjs never changes their behaviour.
+BLANK_CONFIG="export const SITE_CONFIG={google:{clientId:'',apiKey:'',projectNumber:''}};"
+def blank_config(context):
+ context.route('**/pt-atlas/site-config.mjs',lambda route:route.fulfill(content_type='text/javascript',body=BLANK_CONFIG));return context
 try:
  with sync_playwright() as p:
   browser=p.chromium.launch(executable_path=shutil.which('chromium') or os.environ.get('PT_ATLAS_CHROMIUM') or None,args=['--no-sandbox'])
-  context=browser.new_context(accept_downloads=True,color_scheme='dark')
+  context=blank_config(browser.new_context(accept_downloads=True,color_scheme='dark'))
   page=context.new_page();errors=[];external=[]
   page.on('pageerror',lambda e:errors.append(str(e)));page.on('dialog',lambda dialog:dialog.accept())
   page.on('request',lambda r:external.append(r.url) if not r.url.startswith(('http://127.0.0.1','data:','blob:')) else None)

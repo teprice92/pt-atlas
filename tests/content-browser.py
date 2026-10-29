@@ -10,10 +10,14 @@ threading.Thread(target=server.serve_forever,daemon=True).start()
 PNG=base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==')
 PDF=b'%PDF-1.4\n1 0 obj<<>>endobj\ntrailer<<>>\n%%EOF'
 SVG=b'<svg xmlns="http://www.w3.org/2000/svg" onload="alert(1)"></svg>'
+# Tests run against a blank Google config so the deployed site-config.mjs never changes their behaviour.
+BLANK_CONFIG="export const SITE_CONFIG={google:{clientId:'',apiKey:'',projectNumber:''}};"
+def blank_config(context):
+ context.route('**/pt-atlas/site-config.mjs',lambda route:route.fulfill(content_type='text/javascript',body=BLANK_CONFIG));return context
 try:
  with sync_playwright() as p:
   browser=p.chromium.launch(executable_path=shutil.which('chromium') or os.environ.get('PT_ATLAS_CHROMIUM') or None,args=['--no-sandbox'])
-  context=browser.new_context(accept_downloads=True)
+  context=blank_config(browser.new_context(accept_downloads=True))
   page=context.new_page();errors=[];alerts=[]
   page.on('pageerror',lambda e:errors.append(str(e)));page.on('dialog',lambda d:(alerts.append(d.message),d.accept()))
   base=f'http://127.0.0.1:{server.server_port}/pt-atlas/'
@@ -53,7 +57,7 @@ try:
   data=json.loads(Path(downloaded.value.path()).read_text());assert data['version']==3 and len(data['media'])==2 and data['regions'][0]['name']=="Pelvic & Women's Health"
   assert {m['type'] for m in data['media']}=={'image/png','application/pdf'};assert base64.b64decode([m for m in data['media'] if m['type']=='image/png'][0]['data'])==PNG
   # Restore into a fresh profile: region, entry and attachments come back.
-  fresh=browser.new_context();other=fresh.new_page();other.on('dialog',lambda d:d.accept());other.on('pageerror',lambda e:errors.append(str(e)))
+  fresh=blank_config(browser.new_context());other=fresh.new_page();other.on('dialog',lambda d:d.accept());other.on('pageerror',lambda e:errors.append(str(e)))
   other.goto(base+'#/import');other.locator('#restoreFile').set_input_files({'name':'v3.json','mimeType':'application/json','buffer':json.dumps(data).encode()});other.get_by_text('Backup imported successfully').wait_for()
   other.goto(base+"#/region/Pelvic%20%26%20Women's%20Health");other.locator('[data-open]').first.click();other.locator('.media-grid img').wait_for();assert other.locator('.media-grid li').count()==2
   fresh.close()

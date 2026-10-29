@@ -13,6 +13,7 @@ Settings → **Sync across devices** keeps the library the same on every device 
 - **Starter conditions** created on each device are merged rather than duplicated. Custom regions with the same name are combined.
 - **Turn off sync** stops syncing on that device and keeps both copies. Turning it back on later merges the two copies without deleting anything, so an entry deleted on another device in the meantime can reappear here. **Remove synced copy from Google Drive** deletes the app-folder files.
 - Settings (theme, Google project) stay per device. Patient-identifying information must still never be stored.
+- **Sign in with Google** buttons follow Google's sign-in branding guidelines: the unmodified "G" logo on the sign-in button only, approved wording, Google's light and dark colours, and Roboto Medium self-hosted from `fonts/` (Apache 2.0, licence included) so no third-party font request is made.
 - **Privacy Policy** (`privacy.html`) and **Terms of Service** (`terms.html`) are static pages, linked from the app footer and Settings, cached for offline use, and ready for Google's branding page. The privacy policy describes exactly what the app does with Google data, including the required Limited Use statement. Have them reviewed if you need formal legal sign-off.
 
 ## Version 0.9: label matching for imports (no AI)

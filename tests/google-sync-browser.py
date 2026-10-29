@@ -37,13 +37,13 @@ try:
   # Site-wide configuration is used without any per-browser setup.
   go('#/import');page.get_by_text('Google is set up for this site.').wait_for()
   go('#/settings');page.get_by_text('Google is set up for this site.').wait_for();page.get_by_text('Not connected.',exact=False).wait_for()
-  action('Connect Google account');page.get_by_text('Google connection ready. Click Connect Google account again',exact=False).wait_for()
-  action('Connect Google account');page.get_by_text('Connected to Google for this session.').first.wait_for()
+  assert page.locator('.gsi-btn .gsi-logo').count()==1;action('Sign in with Google');page.get_by_text('Google connection ready. Click Sign in with Google again',exact=False).wait_for()
+  action('Sign in with Google');page.get_by_text('Connected to Google for this session.').first.wait_for()
   assert page.evaluate('window.__oauthConfig.client_id')=='site-client.apps.googleusercontent.com';assert page.evaluate('window.__oauthConfig.scope')=='https://www.googleapis.com/auth/drive.file'
-  page.get_by_role('button',name='Reconnect Google').wait_for()
-  action('Disconnect Google');page.get_by_text('Google access disconnected.',exact=False).first.wait_for();assert page.evaluate('window.__revoked')==1;page.get_by_role('button',name='Connect Google account').wait_for()
+  page.locator('.google-connected').wait_for();assert page.locator('.gsi-btn').count()==0
+  action('Disconnect Google');page.get_by_text('Google access disconnected.',exact=False).first.wait_for();assert page.evaluate('window.__revoked')==1;page.get_by_role('button',name='Sign in with Google').wait_for()
   # Import both docs with heading splitting.
-  go('#/import');page.locator('#googleSplit').check();action('Choose Google Docs');page.get_by_role('heading',name='Review imported entries').wait_for()
+  go('#/import');page.get_by_role('button',name='Sign in with Google').wait_for();page.locator('#googleSplit').check();action('Choose Google Docs');page.get_by_role('heading',name='Review imported entries').wait_for()
   assert page.locator('[data-draft]').count()==3;action('Confirm import');page.get_by_text('Imported 3 entries locally; 0 skipped.').wait_for()
   # Nothing changed yet.
   go('#/import');action('Check imported Docs for updates');page.get_by_text('Up to date: 2 linked Google Docs checked',exact=False).wait_for()

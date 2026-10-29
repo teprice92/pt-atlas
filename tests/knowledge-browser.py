@@ -14,10 +14,14 @@ t.objectStore('conditions').put({id:'c-oa',name:'Hip Osteoarthritis',region:'Hip
 t.objectStore('interventions').put({id:'i-bridge',name:'Bridge',region:'Hip',condition:'Total Hip Arthroplasty (THA)',category:'Therapeutic Exercise',notes:'Legacy note',favorite:false,updated:'2026-01-01'});
 t.objectStore('interventions').put({id:'i-old',name:'Annual check item',region:'Hip',condition:'',category:'Other',reviewStatus:'reviewed',reviewedAt:'2020-01-01',favorite:false,updated:'2020-01-01'});
 t.oncomplete=()=>{d.close();resolve()};t.onerror=()=>reject(t.error)}})'''
+# Tests run against a blank Google config so the deployed site-config.mjs never changes their behaviour.
+BLANK_CONFIG="export const SITE_CONFIG={google:{clientId:'',apiKey:'',projectNumber:''}};"
+def blank_config(context):
+ context.route('**/pt-atlas/site-config.mjs',lambda route:route.fulfill(content_type='text/javascript',body=BLANK_CONFIG));return context
 try:
  with sync_playwright() as p:
   browser=p.chromium.launch(executable_path=shutil.which('chromium') or os.environ.get('PT_ATLAS_CHROMIUM') or None,args=['--no-sandbox'])
-  context=browser.new_context(accept_downloads=True)
+  context=blank_config(browser.new_context(accept_downloads=True))
   page=context.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)));page.on('dialog',lambda dialog:dialog.accept())
   base=f'http://127.0.0.1:{server.server_port}/pt-atlas/'
   page.goto(base+'icon.svg');page.evaluate(SEED_V1)
@@ -70,7 +74,7 @@ try:
   with page.expect_download() as downloaded: action('Export JSON backup')
   data=json.loads(Path(downloaded.value.path()).read_text());assert data['version']==3
   assert len(data['links'])==1 and len(data['phases'])==2 and len(data['collections'])==1 and len(data['revisions'])>=3
-  fresh=browser.new_context();other=fresh.new_page();alerts=[];other.on('dialog',lambda d:(alerts.append(d.message),d.accept()));other.on('pageerror',lambda e:errors.append(str(e)))
+  fresh=blank_config(browser.new_context());other=fresh.new_page();alerts=[];other.on('dialog',lambda d:(alerts.append(d.message),d.accept()));other.on('pageerror',lambda e:errors.append(str(e)))
   # A starter condition that the user has filled in must not be silently duplicated or overwritten.
   other.goto(base+'#/condition/Hip/Hip%20Osteoarthritis');other.get_by_role('button',name='Edit condition',exact=True).click();other.get_by_label('Clinical overview').fill('My own overview');other.get_by_role('button',name='Save condition',exact=True).click();other.locator('#conditionForm').wait_for(state='detached')
   other.goto(base+'#/import');other.locator('#restoreFile').set_input_files({'name':'v2.json','mimeType':'application/json','buffer':json.dumps(data).encode()});other.wait_for_function('true');other.wait_for_timeout(300)

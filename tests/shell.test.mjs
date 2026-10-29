@@ -21,7 +21,7 @@ test('no third-party fonts, trackers or remote stylesheets in the app shell',()=
 });
 test('Pages workflow publishes every shell asset',()=>{
  const workflow=read('.github/workflows/deploy.yml');
- for(const file of ['index.html','app.js','import-tools.mjs','docx-import.mjs','google-import.mjs','icons.mjs','backup.mjs','media.mjs','markdown.mjs','site-config.mjs','field-mapper.mjs','drive-sync.mjs','styles.css','sw.js','manifest.webmanifest','icon.svg','icons'])assert.match(workflow,new RegExp(`[ /]${file.replace('.','\\.')}[ /]`),file);
+ for(const file of ['index.html','app.js','import-tools.mjs','docx-import.mjs','google-import.mjs','icons.mjs','backup.mjs','media.mjs','markdown.mjs','site-config.mjs','field-mapper.mjs','drive-sync.mjs','styles.css','sw.js','manifest.webmanifest','icon.svg','icons','fonts'])assert.match(workflow,new RegExp(`[ /]${file.replace('.','\\.')}[ /]`),file);
 });
 test('site config ships blank and holds only public Google values',async()=>{
  const {SITE_CONFIG}=await import('../site-config.mjs');
@@ -39,4 +39,9 @@ test('privacy and terms pages are cached, published, local-only and contain requ
  assert.match(privacy,/use and transfer of information received from Google APIs adheres to the <a href="https:\/\/developers\.google\.com\/terms\/api-services-user-data-policy">Google API Services User Data Policy<\/a>, including the Limited Use requirements/);
  for(const scope of ['drive.file','drive.appdata'])assert.match(privacy,new RegExp(scope.replace('.','\\.')));
  assert.match(read('terms.html'),/not medical advice/i);
+});
+test('self-hosted Roboto for the Google sign-in button is cached, licensed and a real WOFF2 file',()=>{
+ const font=readFileSync(new URL('fonts/roboto-latin-500-normal.woff2',root));assert.equal(font.subarray(0,4).toString(),'wOF2');assert.ok(font.length<60000);
+ assert.ok(read('sw.js').includes("'./fonts/roboto-latin-500-normal.woff2'"));assert.match(read('fonts/LICENSE-Roboto.txt'),/Apache License/);
+ assert.match(read('styles.css'),/url\('fonts\/roboto-latin-500-normal\.woff2'\)/);
 });

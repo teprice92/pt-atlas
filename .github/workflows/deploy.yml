@@ -21,7 +21,7 @@ jobs:
       - run: pip install playwright
       - run: python -m playwright install --with-deps chromium
       - run: npm test
-      - run: mkdir public && cp -r index.html app.js import-tools.mjs docx-import.mjs google-import.mjs icons.mjs backup.mjs media.mjs markdown.mjs site-config.mjs field-mapper.mjs drive-sync.mjs styles.css sw.js manifest.webmanifest icon.svg icons fonts privacy.html terms.html public/
+      - run: mkdir public && cp -r index.html app.js import-tools.mjs docx-import.mjs google-import.mjs icons.mjs backup.mjs media.mjs markdown.mjs site-config.mjs field-mapper.mjs drive-sync.mjs styles.css sw.js manifest.webmanifest icon.svg icons fonts templates privacy.html terms.html public/
       - uses: actions/upload-pages-artifact@v3
         if: github.ref == 'refs/heads/main'
         with:

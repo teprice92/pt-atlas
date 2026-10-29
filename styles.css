@@ -353,6 +353,35 @@ mark{background:color-mix(in srgb,var(--blue) 22%,transparent);color:inherit;bor
 :root[data-theme="dark"] .gsi-btn{background:#131314;border-color:#8E918F;color:#E3E3E3}
 :root[data-theme="dark"] .gsi-btn:hover{background:#1F1F21}
 .google-connected{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--accent-ink)}
+/* ——— Getting started ——— */
+.guide{margin:28px 0 8px;padding:clamp(20px,3vw,28px);border-radius:var(--radius);border:1px solid var(--line);background:linear-gradient(160deg,color-mix(in srgb,var(--blue) 7%,var(--surface)),var(--surface));box-shadow:var(--shadow)}
+.guide-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.guide-head .actions{margin-top:0}
+.guide-head .row-meta{margin-top:6px}
+.guide .meter{margin:16px 0 8px}
+.guide-steps{list-style:none;padding:0;margin:8px 0 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.guide-steps li{display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;padding:14px;border-radius:16px;background:var(--surface);border:1px solid var(--line)}
+.guide-steps li.done{opacity:.75}
+.guide-steps li.done h3{text-decoration:line-through;text-decoration-color:var(--ink-3)}
+.guide-steps h3{font-size:15px}
+.guide-steps p{margin:4px 0 0;font-size:13.5px;color:var(--ink-2);line-height:1.5}
+.guide-steps .actions{margin-top:10px;gap:6px}
+.guide-steps .btn{white-space:nowrap}
+.guide-check{display:grid;place-items:center;width:26px;height:26px;border-radius:999px;border:2px solid var(--line-2);color:#fff}
+.done .guide-check{background:var(--teal);border-color:var(--teal)}
+a.btn{text-decoration:none}
+.template-panel{margin-top:24px}
+.steps-list{margin:16px 0 0;padding-left:1.3em;color:var(--ink-2);line-height:1.6;font-size:14.5px}
+.steps-list li{margin:4px 0}
+.tour{border:0;border-radius:28px;padding:clamp(24px,4vw,36px);max-width:min(520px,calc(100vw - 32px));background:var(--surface);color:var(--ink);box-shadow:var(--shadow-lg)}
+.tour::backdrop{background:rgba(11,17,28,.55);backdrop-filter:blur(4px)}
+.tour h2{font-size:26px;margin-bottom:10px}
+.tour p{color:var(--ink-2);line-height:1.6}
+.tour-art{display:grid;place-items:center;width:84px;height:84px;border-radius:24px;margin-bottom:18px;color:var(--blue);background:color-mix(in srgb,var(--blue) 10%,transparent)}
+.tour-dots{display:flex;gap:6px;margin:18px 0 0}
+.tour-dots span{width:8px;height:8px;border-radius:999px;background:var(--line-2)}
+.tour-dots span.on{width:22px;background:var(--primary)}
+.tour-skip{margin-left:auto}
 /* ——— Sync ——— */
 button.pill{cursor:pointer;font-family:inherit}
 button.pill:hover{border-color:var(--ink-3)}

@@ -1,6 +1,10 @@
-# PT Atlas delivery — version 1.0
+# PT Atlas delivery — version 1.1
 
-## Version 1.0 summary
+## Version 1.1 summary
+
+Added import templates (Word and Markdown, generated and drift-tested), a self-completing getting-started checklist on Home, an optional keyboard-accessible tour, and a last-backup record. The Word template was checked to open in LibreOffice with its four guidance comments intact, and a browser test round-trips it through the importer with every field mapped. Verified locally: `npm run build`, 50 unit tests and nine Playwright suites.
+
+## Version 1.0 notes
 
 Google Drive sync across devices through the hidden app folder (`drive.appdata`), with no server. The merge is three-way: changes combine, deletions propagate, and conflicts keep the newer edit while the other version goes into revision history. Attachments sync too, and starter conditions are de-duplicated. It is verified locally with a two-device browser test against an in-memory fake Drive, plus unit tests for merging, retries on concurrent writes and malformed Drive data. A live Google account still needs a manual check once the Google Cloud project exists.
 

@@ -359,14 +359,16 @@ mark{background:color-mix(in srgb,var(--blue) 22%,transparent);color:inherit;bor
 .guide-head .actions{margin-top:0}
 .guide-head .row-meta{margin-top:6px}
 .guide .meter{margin:16px 0 8px}
-.guide-steps{list-style:none;padding:0;margin:8px 0 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.guide-steps{list-style:none;padding:0;margin:8px 0 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px}
 .guide-steps li{display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;padding:14px;border-radius:16px;background:var(--surface);border:1px solid var(--line)}
 .guide-steps li.done{opacity:.75}
 .guide-steps li.done h3{text-decoration:line-through;text-decoration-color:var(--ink-3)}
 .guide-steps h3{font-size:15px}
 .guide-steps p{margin:4px 0 0;font-size:13.5px;color:var(--ink-2);line-height:1.5}
 .guide-steps .actions{margin-top:10px;gap:6px}
-.guide-steps .btn{white-space:nowrap}
+/* Buttons never exceed their card: labels wrap instead (narrow cards, large text settings). */
+.guide-steps li>div{min-width:0}
+.guide-steps .btn{max-width:100%;white-space:normal;text-align:center;height:auto}
 .guide-check{display:grid;place-items:center;width:26px;height:26px;border-radius:999px;border:2px solid var(--line-2);color:#fff}
 .done .guide-check{background:var(--teal);border-color:var(--teal)}
 a.btn{text-decoration:none}

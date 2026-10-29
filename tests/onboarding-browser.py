@@ -55,6 +55,13 @@ try:
   # Mobile layout keeps the checklist and tour within the screen.
   page.set_viewport_size({'width':390,'height':844});go('#/settings');action('Show getting-started checklist');page.locator('section.guide').wait_for();assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth')
   page.locator('section.guide').get_by_role('button',name='Take the tour').click();box=page.get_by_role('dialog').bounding_box();assert box['x']>=0 and box['x']+box['width']<=390
+  # Every checklist button stays inside its card at phone, tablet and desktop widths, including with enlarged text.
+  OVERFLOW="()=>[...document.querySelectorAll('.guide-steps li')].flatMap(li=>{const r=li.getBoundingClientRect();return [...li.querySelectorAll('.btn')].filter(b=>{const x=b.getBoundingClientRect();return x.right>r.right+0.5||x.left<r.left-0.5}).map(b=>b.textContent.trim())})"
+  for width in [320,390,768,1024,1280]:
+   for scale in ['100%','130%']:
+    page.set_viewport_size({'width':width,'height':900});go('');page.locator('section.guide').wait_for()
+    if scale!='100%':page.add_style_tag(content='.guide *{font-size:%s !important}'%scale)
+    assert page.evaluate(OVERFLOW)==[],(width,scale,page.evaluate(OVERFLOW))
   assert not errors,errors
-  browser.close();print('PASS: getting-started checklist (progress, auto-retire, hide/show), keyboard tour with Escape, Word template download and round-trip import with all fields mapped and comments excluded, Markdown template, last-backup record, mobile layout')
+  browser.close();print('PASS: getting-started checklist (progress, auto-retire, hide/show), keyboard tour with Escape, Word template download and round-trip import with all fields mapped and comments excluded, Markdown template, last-backup record, mobile layout, checklist buttons contained at 320–1280px and 130% text')
 finally: server.shutdown()

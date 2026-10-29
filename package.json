@@ -1,12 +1,13 @@
 {
   "name": "pt-atlas",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "scripts": {
-    "build": "node --check app.js && node --check sw.js && node --check import-tools.mjs && node --check docx-import.mjs && node --check google-import.mjs && node --check icons.mjs && node --check backup.mjs && node --check media.mjs && node --check markdown.mjs && node --check site-config.mjs && node --check field-mapper.mjs && node --check drive-sync.mjs",
+    "build": "node --check app.js && node --check sw.js && node --check import-tools.mjs && node --check docx-import.mjs && node --check google-import.mjs && node --check icons.mjs && node --check backup.mjs && node --check media.mjs && node --check markdown.mjs && node --check site-config.mjs && node --check field-mapper.mjs && node --check drive-sync.mjs && node --check tools/make-templates.mjs",
     "test:unit": "node --test tests/*.test.mjs",
-    "test:browser": "python tests/smoke.py && python tests/import-browser.py && python tests/features-browser.py && python tests/knowledge-browser.py && python tests/content-browser.py && python tests/google-sync-browser.py && python tests/mapping-browser.py && python tests/sync-browser.py",
-    "test": "npm run test:unit && npm run test:browser"
+    "test:browser": "python tests/smoke.py && python tests/import-browser.py && python tests/features-browser.py && python tests/knowledge-browser.py && python tests/content-browser.py && python tests/google-sync-browser.py && python tests/mapping-browser.py && python tests/sync-browser.py && python tests/onboarding-browser.py",
+    "test": "npm run test:unit && npm run test:browser",
+    "templates": "node tools/make-templates.mjs"
   },
   "type": "module"
 }

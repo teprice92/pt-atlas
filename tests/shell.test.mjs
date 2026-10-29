@@ -21,7 +21,7 @@ test('no third-party fonts, trackers or remote stylesheets in the app shell',()=
 });
 test('Pages workflow publishes every shell asset',()=>{
  const workflow=read('.github/workflows/deploy.yml');
- for(const file of ['index.html','app.js','import-tools.mjs','docx-import.mjs','google-import.mjs','icons.mjs','backup.mjs','media.mjs','markdown.mjs','site-config.mjs','field-mapper.mjs','drive-sync.mjs','styles.css','sw.js','manifest.webmanifest','icon.svg','icons','fonts'])assert.match(workflow,new RegExp(`[ /]${file.replace('.','\\.')}[ /]`),file);
+ for(const file of ['index.html','app.js','import-tools.mjs','docx-import.mjs','google-import.mjs','icons.mjs','backup.mjs','media.mjs','markdown.mjs','site-config.mjs','field-mapper.mjs','drive-sync.mjs','styles.css','sw.js','manifest.webmanifest','icon.svg','icons','fonts','templates'])assert.match(workflow,new RegExp(`[ /]${file.replace('.','\\.')}[ /]`),file);
 });
 test('site config ships blank and holds only public Google values',async()=>{
  const {SITE_CONFIG}=await import('../site-config.mjs');
@@ -44,4 +44,14 @@ test('self-hosted Roboto for the Google sign-in button is cached, licensed and a
  const font=readFileSync(new URL('fonts/roboto-latin-500-normal.woff2',root));assert.equal(font.subarray(0,4).toString(),'wOF2');assert.ok(font.length<60000);
  assert.ok(read('sw.js').includes("'./fonts/roboto-latin-500-normal.woff2'"));assert.match(read('fonts/LICENSE-Roboto.txt'),/Apache License/);
  assert.match(read('styles.css'),/url\('fonts\/roboto-latin-500-normal\.woff2'\)/);
+});
+test('import templates are current, cached, published and contain placeholders only',async()=>{
+ const {docxTemplate,markdownTemplate}=await import('../tools/make-templates.mjs');
+ assert.ok(readFileSync(new URL('templates/pt-atlas-template.docx',root)).equals(docxTemplate()),'run npm run templates');
+ assert.equal(read('templates/pt-atlas-template.md'),markdownTemplate(),'run npm run templates');
+ for(const file of ['templates/pt-atlas-template.docx','templates/pt-atlas-template.md'])assert.ok(read('sw.js').includes(`'./${file}'`),file);
+ // Every field heading in the template is one the label matcher recognises.
+ const {labelKey}=await import('../field-mapper.mjs');
+ const labels=[...markdownTemplate().matchAll(/^### (.+)$/gm)].map(m=>m[1]);assert.ok(labels.length>=8);for(const label of labels)assert.ok(labelKey(label),label);
+ assert.doesNotMatch(markdownTemplate(),/\d+\s*(x|sets|reps|seconds|minutes)/i,'no example dosages');
 });
